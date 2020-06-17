@@ -1,0 +1,2 @@
+# goobi-plugin-opac-mab
+
