@@ -1,0 +1,402 @@
+0000:256743
+0002:02.02.1999
+0003:09.03.2015
+0014.001:DIJT 001-007
+0015:lat
+0027:V
+0100.001:Carrach, Johann Philipp ¬von
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0335.001:iuncta resolutione dubiorum quorundam adversus deductionem iuris monetandi ex superioritate ; qua disputationes publicas Sabbathinas ... in Regia Fridericiana ... auspicandas indicit
+0359:... Ioannes Philippus Carrach ...
+0413.001:Grunert
+0440.001:Halle, Saale
+0501.001:Erschienen: 1 (1752) - 5 (1752)
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103941%22
+0700.001:05,03.00
+0902.001:Reichsstaatsrecht
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-001
+1577:MehrbdWerk
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:256744
+0002:02.02.1999
+0003:09.03.2015
+0004.001:256743
+0014.001:DIJT 001-007 [1]
+0015:lat
+0024.001:10
+0027:V
+0028:B
+0089.001:1
+0100.001:Carrach, Johann Philipp ¬von
+0100.002:Goecken, Friedrich Carl
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0359:[Präses:] Johann Philipp von Carrach. [Respondent:] Friedrich Carl Goecken
+0425:1752
+0433.001:S. 1 - 4
+0519:Halle <Saale>, Univ., Diss., 1752
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103942%22
+1021.001:Disputatio [jur.], 1752-08-05
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-996
+1371.001:Theses iuridicae
+1555.001:Goecken, Friedrich Carl: Altena, Westfalen
+1575.001:ad18
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:256745
+0002:02.02.1999
+0003:09.03.2015
+0004.001:256743
+0014.001:DIJT 001-007 [2]
+0015:lat
+0024.001:20
+0027:V
+0028:B
+0089.001:2
+0100.001:Carrach, Johann Philipp ¬von
+0100.002:Rischmüller, Ernst Philipp
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0359:[Präses:] Johann Philipp von Carrach. [Respondent:] Ernst Philipp Rischmüller
+0425:1752
+0433.001:S. 5 - 8
+0519:Halle <Saale>, Univ., Diss., 1752
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103943%22
+1021.001:Disputatio [jur.], 1752-08-12
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-997
+1371.001:Theses ex iure vario
+1555.001:Rischmüller, Ernst Philipp: Minden
+1575.001:ad18
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:256746
+0002:02.02.1999
+0003:09.03.2015
+0004.001:256743
+0014.001:DIJT 001-007 [3]
+0015:lat
+0024.001:30
+0027:V
+0028:B
+0089.001:3
+0100.001:Carrach, Johann Philipp ¬von
+0100.002:Lassahn, Christoph Daniel
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0359:[Präses:] Johann Philipp von Carrach. [Respondent:] Christoph Daniel Lassahn
+0425:1752
+0433.001:S. 9 - 12
+0519:Halle <Saale>, Univ., Diss., 1752
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103944%22
+1021.001:Disputatio [jur.], 1752-08-19
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-998
+1371.001:Theses ex iure vario
+1555.001:Lassahn, Christoph Daniel: Halle, Saale
+1575.001:ad18
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:256747
+0002:02.02.1999
+0003:09.03.2015
+0004.001:256743
+0014.001:DIJT 001-007 [4]
+0024.001:40
+0027:V
+0028:B
+0089.001:4
+0100.001:Carrach, Johann Philipp ¬von
+0100.002:Grolman, Moritz Theodor
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0359:[Präses:] Johann Philipp von Carrach. [Respondent:] Moritz Theodor Grolman
+0425:1752
+0433.001:S. 13 - 20
+0519:Halle <Saale>, Univ., Diss., 1752
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103945%22
+1021.001:Disputatio [jur.], 1752-08-26
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-999
+1371.001:Theses iuridicae
+1555.001:Grolman, Moritz Theodor: Kleve
+1575.001:ad18
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:326409
+0002:28.05.2002
+0003:09.03.2015
+0014.001:VADI 278-002
+0015:lat
+0026.001:Dissertationis de principiis iuris personarum pars ...
+0027:V
+0100.001:Granz, Tobias
+0331.001:De principiis iuris personarum
+0359:sub praesidio Tobiae Grantz ...
+0413.001:Gollner
+0440.001:Jena
+0501.001:Bd. 2 u.d.T.: Dissertationis de principiis iuris personarum pars ...
+0501.002:Erschienen: [1] (1684) - 2 (1684)
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001043456%22
+0700.001:04,03.01
+0902.001:Personenstand
+1040.001:DissproImage: VADI278002
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI278002-001
+1577:MehrbdWerk
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:326410
+0002:28.05.2002
+0003:09.03.2015
+0004.001:326409
+0014.001:VADI 278-002 [1]
+0024.001:10
+0027:V
+0028:B
+0089.001:[1]
+0100.001:Granz, Tobias
+0100.002:Schmidt, Jacob Friedrich
+0331.001:De principiis iuris personarum
+0359:[Präses:] Tobias Granz. [Respondent:] Jacob Friedrich Schmidt
+0425:1684
+0433.001:[12] Bl.
+0519:Jena, Univ., Diss., 1684
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001043457%22
+1021.001:Disputatio, 1684-09-03
+1040.001:DissproImage: VADI278002
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI278002-998
+1371.001:... occasione relectionis illustris domini Struvii Iurisprudentiae Romano-Germ. forensis lib. I. tit. III. ...
+1555.001:Schmidt, Jacob Friedrich: Guben, Lausitz
+1575.001:ad17
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:326411
+0002:28.05.2002
+0003:09.03.2015
+0004.001:326409
+0014.001:VADI 278-002 [2]
+0024.001:20
+0027:V
+0028:B
+0089.001:2
+0100.001:Granz, Tobias
+0100.002:Schmidt, Jacob Friedrich
+0331.001:De principiis iuris personarum
+0359:[Präses:] Tobias Granz. [Respondent:] Jacob Friedrich Schmidt. [Beiträger: Tobias Granz]
+0425:1684
+0433.001:[18] Bl.
+0519:Jena, Univ., Diss., 1684
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001043458%22
+1021.001:Disputatio, 1684-00-00
+1040.001:DissproImage: VADI278002
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI278002-999
+1371.001:... occasione relectionis illustris domini Struvii Iurisprudentiae Romano-German.-forensis lib. I. tit. IV. ... statum hominum civilem atque exinde surgentes actiones concernens
+1555.001:Schmidt, Jacob Friedrich: Guben, Lausitz
+1575.001:ad17
+1577:BdSatz; Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:415096
+0002:08.08.2006
+0003:10.03.2015
+0014.001:LIMB 235-005
+0015:ger
+0026.001:Der ander PostReuter/ An Bäpstliche Heiligkeit/ Bapst Paulum V. durch einen fürnemen geistlichen Praelaten in Italianischer Sprach außgefertigt
+0027:S
+0331.001:PostReuter/ An Bäpstliche Heiligkeit/ Bapst Paulum V. durch einen fürnemen geistlichen Praelaten in Italianischer Sprach außgefertigt
+0440.001:[S.l.]
+0501.001:Bd. 2 u.d.T.: Der ander PostReuter/ An Bäpstliche Heiligkeit/ Bapst Paulum V. durch einen fürnemen geistlichen Praelaten in Italianischer Sprach außgefertigt
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220201041978%22
+0700.001:12,00.00
+0902.001:Miscellanea
+1040.001:DissproImage: LIMB235005
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: LIMB235005-001
+1577:MehrbdWerk; Reichspublizistik [disspro]
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:415095
+0002:08.08.2006
+0003:13.07.2017
+0004.001:415096
+0014.001:LIMB 235-005 [1]
+0015:ger
+0024.001:10
+0027:S
+0028:B
+0089.001:[Discurs]
+0331.001:¬Ein¬ sehr schöner außführlicher Discurs; Auß was hochwichtigen erheblichen Ursachen/ die gesampten Catholischen Stände Krieg wider das Königreich Böhem/ dessen incorporirte Ländere/ und consequenter wider alle Evangelischen inn: und ausser dem Römischen Reich/ zu abwendung grösserer Gefahr/ auch ihres endtlichen Untergangs und gäntzlichen Verderbens/ abstellen unnd auffheben/ sich auffs new in gütliche Compositions-handlung mit ihnen einlassen: und die Sach dem lieben Gott befehlen sollen praesentirt zu Rom in Judicio Rotae ad pedes S. Papae Beatissimi in praesentia Cardinalium omnium, 12 Januarij, Anno 1620 ; auß den Italianischen: in die Hoch Teutsche Sprach transferirt: und mit Röm. Bäpstl. Heiligk. Ablaß/ Indulten/ Gnad und Freyheiten Gedruckt ...
+0425:1620
+0433.001:128 S.
+0451.001:PostReuter/ An Bäpstliche Heiligkeit/ Bapst Paulum V. durch einen fürnemen geistlichen Praelaten in Italianischer Sprach außgefertigt ; [1]
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220201041977%22
+1040.001:DissproImage: LIMB235005
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: LIMB235005-001
+1575.001:ad17
+1577:Reichspublizistik [disspro]; BdSatz
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:415097
+0002:08.08.2006
+0003:13.07.2017
+0004.001:415096
+0014.001:LIMB 235-005 [2]
+0015:ger
+0024.001:20
+0027:S
+0028:B
+0089.001:[Sendschreiben]
+0331.001:¬Ein¬ sehr außführliches discursirtes Sendschreiben; auß was fernern erheblichen hochwichtigen Ursachen/ die gesampten Römisch-Catholische/ Geistliche und Weltliche Ständ den fürhabenden Krieg/ wider das Königreich Böheimen/ und dessen incorporirte Länder/ auch wider die gesampten Evangelischen; Zu vörderst die Unirten Correspondirenden König/ Chur-Fürsten/ Ständ und Städte/ unverzüglich ab- und einstellen/ sich deß Königs in Hispanien gäntzlich entschlagen/ Ihren (der Evangelischen) lang geklagten Graviminibus und Beschwerungen/ förderlich abhelffen/ sich mit ihnen auffs new in gütliche Compositions-Handlung einlassen: und das übrige den lieben Gott walten lassen sollen, wo fern anders sie Catholische/ grössere Gefahr abzuwenden/ auch ihrem endlichen Untergang und gäntzlichem Verderben vorzubawen gedencken ; Praesentirt zu Rom/ in Judicio Rotae ad pedes S. Papae Beatissimi, in praesentia Cardinalium omnium, 19. Julii, Anno 1620 ; Mit Röm. Bäpstl. Heiligk. Gnad/ Ablaß/ Indulgentz und Freyheiten/ Gedruckt ...
+0425:1621
+0433.001:152 S.
+0451.001:PostReuter/ An Bäpstliche Heiligkeit/ Bapst Paulum V. durch einen fürnemen geistlichen Praelaten in Italianischer Sprach außgefertigt ; 2
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220201041979%22
+1040.001:DissproImage: LIMB235005
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: LIMB235005-999
+1575.001:ad17
+1577:Reichspublizistik [disspro]; BdSatz
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:279159
+0002:08.02.2000
+0003:10.03.2015
+0014.001:MIJU 034-006
+0015:lat
+0027:V
+0100.001:Roth, Heinrich Balthasar
+0100.002:Klampring, Friedrich Theodor
+0331.001:De potestate domini territorii et relativa subditorum obligatione
+0359:[Präses:] Heinrich Balthasar Roth. [Respondent:] Friedrich Theodor Klampring. [Beiträger: Joachim Wilhelm Malzan ; Heinrich Balthasar Roth ; Theodor Hocken ; Johann Dietrich von Büren ; Bernhard Ludwig Möllenbeck ; Nicolaus Wilhelm Krüger ; Friedich Caspar von und zu Völkershausen]. [Widmung an: Johann Adolph <Bentheim-Tecklenburg-Steinfurt-Limburg> ; Friedrich Moritz <Bentheim-Tecklenburg-Steinfurt-Limburg>]
+0413.001:Nisius
+0425:1679
+0433.001:[36] Bl.
+0440.001:Jena
+0519:Jena, Univ., Diss., 1679
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001021902%22
+0700.001:05,04.01
+0902.001:Landesherr
+1021.001:Disputatio inauguralis: pro privilegiis doctoralibus [jur.], 1679-02-22
+1040.001:DissproImage: MIJU034006
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: MIJU034006-001 ; Widmung01: MIJU034006-998 ; Widmung02: MIJU034006-999
+1555.001:Klampring, Friedrich Theodor: Uchta, Westfalen
+1575.001:ad17
+1577:Hochschulschrift
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:325810
+0002:28.05.2002
+0003:10.03.2015
+0014.001:VADI 265-037
+0015:lat
+0027:V
+0100.001:Stryk, Johann Samuel
+0100.002:Wagner, Conrad Ludwig
+0331.001:Dissertatio iuris ecclesiastici de iure sabbathi
+0359:[Präses:] Johann Samuel Stryk. [Respondent:] Conrad Ludwig Wagner. [Widmung an: Rudolph August <Braunschweig-Lüneburg> ; Anton Ulrich <Braunschweig-Lüneburg>]
+0403:Editio quarta, cui accessit nova praefatio praesidis, et duae epistolae respondentis
+0413.001:Waisenhaus
+0425:1707
+0433.001:[3] Bl., 12 S., [6] Bl., 162 S.
+0440.001:Halle, Saale
+0501.001:Enth. außerdem u.a.: Jo. Samuelis Strykii ... praefatio ad novam editionem dissertationis De iure sabbathi. Conrad Ludovici Wagneri ... epistola ad amicum
+0519:Zugl.: Halle <Saale>, Univ., Diss., 1702
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001042948%22
+0700.001:11,08.00
+0902.001:Kirchenrecht
+1021.001:Disputatio inauguralis: pro licentia [jur.], 1702-11-17
+1040.001:DissproImage: VADI265037
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI265037-001 ; Widmung01: VADI265037-996
+1555.001:Wagner, Conrad Ludwig: Braunschweig
+1575.001:ad18
+1577:Hochschulschrift, Folgeauflage
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:325811
+0001:325810
+0002:28.05.2002
+0003:10.03.2015
+0014.001:1 in: VADI 265-037
+0015:lat
+0027:V
+0100.001:Stryk, Johann Samuel
+0310.001:Praefatio ad novam editionem dissertationis De iure sabbathi
+0331.001:Io. Samvelis Strykii ... praefatio ad nouam editionem dissertationis De iure sabbathi
+0425:1707
+0433.001:12 S.
+0440.001:Halle, Saale
+0590:Dissertatio iuris ecclesiastici de iure sabbathi / Johann Samuel Stryk. - Editio quarta, cui accessit nova praefatio praesidis, et duae epistolae respondentis
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001042949%22
+0700.001:11,08.00
+0902.001:Kirchenrecht
+1040.001:DissproImage: VADI265037
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI265037-997
+1575.001:ad18
+1577:UW-Diss; Reichspublizistik [disspro]
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:325813
+0001:325810
+0002:28.05.2002
+0003:10.03.2015
+0014.001:3 in: VADI 265-037
+0015:lat
+0027:V
+0100.001:Wagner, Conrad Ludwig
+0331.001:Eiusdem epistola altera ad amicum
+0359:[Conrad Ludwig Wagner]
+0425:1707
+0433.001:[4] Bl.
+0440.001:Halle, Saale
+0590:Dissertatio iuris ecclesiastici de iure sabbathi / Johann Samuel Stryk. - Editio quarta, cui accessit nova praefatio praesidis, et duae epistolae respondentis
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001042951%22
+0700.001:12,00.00
+0902.001:Miscellanea
+1040.001:DissproImage: VADI265037
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI265037-999
+1575.001:ad18
+1577:UW-Diss; Reichspublizistik [disspro]
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
+0000:325812
+0001:325810
+0002:28.05.2002
+0003:10.03.2015
+0014.001:2 in: VADI 265-037
+0015:lat
+0027:V
+0100.001:Wagner, Conrad Ludwig
+0310.001:Epistola ad amicum
+0331.001:Conrad Lvdovici Wagneri ... epistola ad amicvm
+0335.001:Zach, VIII. v. 19. Amate veritatem & pacem
+0425:1707
+0433.001:[2] Bl.
+0440.001:Halle, Saale
+0590:Dissertatio iuris ecclesiastici de iure sabbathi / Johann Samuel Stryk. - Editio quarta, cui accessit nova praefatio praesidis, et duae epistolae respondentis
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220001042950%22
+0700.001:12,00.00
+0902.001:Miscellanea
+1040.001:DissproImage: VADI265037
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: VADI265037-998
+1575.001:ad18
+1577:UW-Diss; Reichspublizistik [disspro]
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+

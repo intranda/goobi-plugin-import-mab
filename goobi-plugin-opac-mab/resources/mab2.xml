@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mab:datei xmlns:mab="http://www.ddb.de/professionell/mabxml/mabxml-1.xsd">
+  <mab:datensatz>
+    <mab:feld nr="0000" ind=" ">256743</mab:feld>
+    <mab:feld nr="0002" ind=" ">02.02.1999</mab:feld>
+    <mab:feld nr="0003" ind=" ">09.03.2015</mab:feld>
+    <mab:feld nr="0014" ind="001">DIJT 001-007</mab:feld>
+    <mab:feld nr="0015" ind=" ">lat</mab:feld>
+    <mab:feld nr="0027" ind=" ">V</mab:feld>
+    <mab:feld nr="0100" ind="001">Carrach, Johann Philipp ¬von</mab:feld>
+    <mab:feld nr="0331" ind="001">Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali</mab:feld>
+    <mab:feld nr="0335" ind="001">iuncta resolutione dubiorum quorundam adversus deductionem iuris monetandi ex superioritate ; qua disputationes publicas Sabbathinas ... in Regia Fridericiana ... auspicandas indicit</mab:feld>
+    <mab:feld nr="0359" ind=" ">... Ioannes Philippus Carrach ...</mab:feld>
+    <mab:feld nr="0413" ind="001">Grunert</mab:feld>
+    <mab:feld nr="0440" ind="001">Halle, Saale</mab:feld>
+    <mab:feld nr="0501" ind="001">Erschienen: 1 (1752) - 5 (1752)</mab:feld>
+    <mab:feld nr="0655" ind="001">http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103941%22</mab:feld>
+    <mab:feld nr="0700" ind="001">05,03.00</mab:feld>
+    <mab:feld nr="0902" ind="001">Reichsstaatsrecht</mab:feld>
+    <mab:feld nr="1040" ind="001">DissproImage: DIJT001007</mab:feld>
+    <mab:feld nr="1040" ind="002">Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-001</mab:feld>
+    <mab:feld nr="1577" ind=" ">MehrbdWerk</mab:feld>
+    <mab:feld nr="1655" ind="001">Digitalisierte Seiten / Digitized pages:</mab:feld>
+  </mab:datensatz>
+</mab:datei>

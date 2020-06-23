@@ -1,0 +1,22 @@
+0000:256743
+0002:02.02.1999
+0003:09.03.2015
+0014.001:DIJT 001-007
+0015:lat
+0027:V
+0100.001:Carrach, Johann Philipp ¬von
+0331.001:Exercitatio iuris publici de interpretatione legum Imperii fundamentalium inprimis monetalium secundum analogiam cum superioritate territoriali
+0335.001:iuncta resolutione dubiorum quorundam adversus deductionem iuris monetandi ex superioritate ; qua disputationes publicas Sabbathinas ... in Regia Fridericiana ... auspicandas indicit
+0359:... Ioannes Philippus Carrach ...
+0413.001:Grunert
+0440.001:Halle, Saale
+0501.001:Erschienen: 1 (1752) - 5 (1752)
+0655.001:http://dlib-diss.mpier.mpg.de/md/kleioc/0010MFER/exec/books/%220000103941%22
+0700.001:05,03.00
+0902.001:Reichsstaatsrecht
+1040.001:DissproImage: DIJT001007
+1040.002:Dateinamen Bilder Dissprojekt: Titelblatt: DIJT001007-001
+1577:MehrbdWerk
+1655.001:Digitalisierte Seiten / Digitized pages:
+9999:
+
