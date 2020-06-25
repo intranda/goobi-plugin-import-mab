@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -21,7 +19,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jdom2.JDOMException;
@@ -33,8 +30,8 @@ import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
@@ -55,6 +52,7 @@ public class MakeMetsMods {
     private XMLConfiguration config;
     private ArrayList<MetsMods> lstMM;
 
+    private MetadataMaker metaMaker;
     private Boolean boWithSGML;
     //keep track of id numbers:
     ArrayList<String> lstIds;
@@ -68,24 +66,25 @@ public class MakeMetsMods {
     //and all top level metadata:
     ArrayList<String> lstTopLevelMetadata;
 
-    public static void main(String[] args) throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
+    public static void main(String[] args)
+            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
 
         String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
-//        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
-        
+        //                String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
+
         if (args.length > 0) {
             strConfig = args[0];
         }
-        
+
         //test diss:
-//        MakeMetsMods maker = new MakeMetsMods("resources/plugin_intranda_opac_mab.xml");
-//        maker.saveMMFile("resources/mab2-complete.txt", "/home/joel/git/rechtsgeschichte/test");
-        
+        //        MakeMetsMods maker = new MakeMetsMods("resources/plugin_intranda_opac_mab.xml");
+        //        maker.saveMMFile("resources/mab2-complete.txt", "/home/joel/git/rechtsgeschichte/test");
+
         MakeMetsMods maker = new MakeMetsMods(strConfig);
 
-        maker.saveMMFile(maker.config.getString("mabFile"), maker.config.getString("outputPath"));
-                
-//        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
+        maker.parse(maker.config.getString("mabFile"));
+
+        //        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
     }
 
     /**
@@ -116,11 +115,7 @@ public class MakeMetsMods {
 
         readTagsList(config.getString("tags"));
 
-    }
-
-    public void saveMMFile(String mabFile, String strFolderForMM) throws UGHException, IOException, JDOMException {
-
-        parse(mabFile);
+        metaMaker = new MetadataMaker(prefs);
     }
 
     public void parse(String mabFile) throws IOException, UGHException, JDOMException {
@@ -131,6 +126,10 @@ public class MakeMetsMods {
 
             MetsMods mm = makeMM(config.getString("defaultPublicationType"));
             DocStruct logical = mm.getDigitalDocument().getLogicalDocStruct();
+
+            //collection:
+            Metadata mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
+            logical.addMetadata(mdCollection);
 
             BufferedReader reader = new BufferedReader(new StringReader(text));
             String str = "";
@@ -144,7 +143,7 @@ public class MakeMetsMods {
                     if (boWithSGML) {
                         sgmlParser.addSGML(mm);
                     }
-                    
+
                     saveMM(mm, strCurrentPath);
 
                     //start next
@@ -170,10 +169,22 @@ public class MakeMetsMods {
                             continue;
                         }
 
-                        Metadata md = getMetadata(tag);
+                        Metadata md = metaMaker.getMetadata(mapTags.get(tag), content);
                         if (md != null) {
-                            md.setValue(content);
-                            logical.addMetadata(md);
+
+                            //already have title? then include as OtherTitle
+                            if (md.getType().getName().equals("TitleDocMain")) {
+
+                                if (logical.getAllMetadataByType(prefs.getMetadataTypeByName("TitleDocMain")).size() != 0) {
+                                    md = metaMaker.getMetadata("OtherTitle", content);
+                                }
+                            }
+
+                            if (md.getType().getIsPerson()) {
+                                logical.addPerson((Person) md);
+                            } else {
+                                logical.addMetadata(md);
+                            }
 
                             //set GoobiId:
                             if (md.getType().getName().equals("CatalogIDDigital")) {
@@ -190,29 +201,11 @@ public class MakeMetsMods {
                     }
                 } catch (Exception e) {
                     // TODO: handle exception
-                   System.out.println(e.getMessage());
+                    System.out.println(e.getMessage());
                 }
             }
 
-            
-
         }
-    }
-
-    private Metadata getMetadata(String tag) throws MetadataTypeNotAllowedException {
-
-        for (String id : mapTags.keySet()) {
-
-            if (id.contentEquals(tag)) {
-
-                String strElt = mapTags.get(id);
-                MetadataType type = prefs.getMetadataTypeByName(strElt);
-                return new Metadata(type);
-            }
-        }
-
-        //not found?
-        return null;
     }
 
     /**
@@ -378,27 +371,27 @@ public class MakeMetsMods {
 
         File toRead = new File(strFileList);
         FileInputStream fis = new FileInputStream(toRead);
+        Scanner sc = new Scanner(fis);
 
         try {
-            Scanner sc = new Scanner(fis);
-
             mapTags = new HashMap<String, String>();
 
             //read data from file line by line:
             String currentLine;
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
-                
-                if (currentLine.length()<3) {
+
+                if (currentLine.length() < 3) {
                     continue;
                 }
-                
+
                 //now tokenize the currentLine:
                 StringTokenizer st = new StringTokenizer(currentLine, " ", false);
                 //put tokens ot currentLine in map
                 mapTags.put(st.nextToken(), st.nextToken());
             }
         } finally {
+            sc.close();
             fis.close();
         }
     }

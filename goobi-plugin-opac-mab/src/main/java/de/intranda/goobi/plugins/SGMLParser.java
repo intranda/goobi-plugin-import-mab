@@ -2,16 +2,12 @@ package de.intranda.goobi.plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.stream.Stream;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -281,8 +277,7 @@ public class SGMLParser {
         if (!image.exists()) {
             return null;
         }
-        
-        
+
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
         fileCopy = new File(pathDest.toString());
 
