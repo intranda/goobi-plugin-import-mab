@@ -1,31 +1,22 @@
 package de.intranda.goobi.plugins;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.stream.Stream;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import org.xml.sax.SAXException;
-
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -35,8 +26,6 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
 
@@ -75,7 +64,7 @@ public class SGMLParser {
 
     public void addSGML(MetsMods mm) throws IOException, UGHException {
 
-        iCurrentPageNo = 0;
+        iCurrentPageNo = 1;
         this.mm = mm;
         this.dd = mm.getDigitalDocument();
         this.physical = dd.getPhysicalDocStruct();
@@ -83,7 +72,9 @@ public class SGMLParser {
         String strId = mm.getGoobiID();
         File sgml = new File(config.getString("sgmlPath") + strId + ".sgm");
 
-        parse(sgml);
+        if (sgml.exists()) {
+            parse(sgml);
+        }
     }
 
     private void parse(File sgml) throws IOException, UGHException {
@@ -92,10 +83,10 @@ public class SGMLParser {
 
         Document doc = getDoc(text);
 
-        //for testing
-        final File f = new File("/home/joel/git/rechtsgeschichte/testdiss/html.txt");
-        FileUtils.writeStringToFile(f, doc.outerHtml(), "UTF-8");
-        //
+        //        //for testing
+        //        final File f = new File("/home/joel/git/rechtsgeschichte/test/html.txt");
+        //        FileUtils.writeStringToFile(f, doc.outerHtml(), "UTF-8");
+        //        //
 
         for (Element elt : doc.getElementsByTag("html")) {
 
@@ -152,7 +143,7 @@ public class SGMLParser {
                     DocStruct page = getAndSavePage(eltImg);
                     if (page != null) {
                         physical.addChild(page);
-                        logical.addReferenceTo(page, "logical_physical");
+                        //                        logical.addReferenceTo(page, "logical_physical");
                         dsEintrag.addReferenceTo(page, "logical_physical");
                     }
                 }
@@ -172,15 +163,21 @@ public class SGMLParser {
                 for (Element eltTitle : elt.getElementsByTag("titleproper")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("TitleDocMain");
                     Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
-                    logical.addMetadata(mdTitle);
+
+                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
+                        mdTitle.setValue(eltTitle.text());
+                        logical.addMetadata(mdTitle);
+                    }
                 }
 
                 for (Element eltTitle : elt.getElementsByTag("author")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
                     Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
-                    logical.addMetadata(mdTitle);
+
+                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
+                        mdTitle.setValue(eltTitle.text());
+                        logical.addMetadata(mdTitle);
+                    }
                 }
             }
 
@@ -189,15 +186,21 @@ public class SGMLParser {
                 for (Element eltTitle : elt.getElementsByTag("pubplace")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PlaceOfPublication");
                     Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
-                    logical.addMetadata(mdTitle);
+
+                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
+                        mdTitle.setValue(eltTitle.text());
+                        logical.addMetadata(mdTitle);
+                    }
                 }
 
                 for (Element eltTitle : elt.getElementsByTag("date")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PublicationYear");
                     Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
-                    logical.addMetadata(mdTitle);
+
+                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
+                        mdTitle.setValue(eltTitle.text());
+                        logical.addMetadata(mdTitle);
+                    }
                 }
             }
 
@@ -224,7 +227,7 @@ public class SGMLParser {
         for (Element child : elt1.children()) {
 
             if (child.tagName().equalsIgnoreCase("div")) {
-                return "OtherDocStrct";
+                return "PartOfWork";
             }
         }
         return "Chapter";
@@ -271,8 +274,15 @@ public class SGMLParser {
         new File(strNormalPath).mkdirs();
 
         Path pathSource = Paths.get(strFilePath);
-        Path pathDest = Paths.get(strImageFolder + strFile);
+        Path pathDest = Paths.get(strMasterPath + strFile);
 
+        //if no image, return null:
+        File image = new File(pathSource.toString());
+        if (!image.exists()) {
+            return null;
+        }
+        
+        
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
         fileCopy = new File(pathDest.toString());
 

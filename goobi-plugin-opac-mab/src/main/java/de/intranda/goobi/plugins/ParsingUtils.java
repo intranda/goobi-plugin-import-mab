@@ -172,8 +172,9 @@ public final class ParsingUtils {
      * @should throw IOException on error
      */
     public static String readFileToString(File file) throws IOException {
+        
         byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-        return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+        return StandardCharsets.ISO_8859_1.decode(ByteBuffer.wrap(encoded)).toString();
     }
 
     /**

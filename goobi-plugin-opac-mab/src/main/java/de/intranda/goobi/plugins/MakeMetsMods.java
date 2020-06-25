@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jdom2.JDOMException;
@@ -68,15 +70,22 @@ public class MakeMetsMods {
 
     public static void main(String[] args) throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
 
+        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
+//        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
+        
+        if (args.length > 0) {
+            strConfig = args[0];
+        }
+        
         //test diss:
 //        MakeMetsMods maker = new MakeMetsMods("resources/plugin_intranda_opac_mab.xml");
-
 //        maker.saveMMFile("resources/mab2-complete.txt", "/home/joel/git/rechtsgeschichte/test");
         
-//        //test privatrecht:
-        MakeMetsMods maker = new MakeMetsMods("/home/joel/git/rechtsgeschichte/testdiss/test-config.xml");
+        MakeMetsMods maker = new MakeMetsMods(strConfig);
 
-        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
+        maker.saveMMFile(maker.config.getString("mabFile"), maker.config.getString("outputPath"));
+                
+//        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
     }
 
     /**
@@ -379,6 +388,11 @@ public class MakeMetsMods {
             String currentLine;
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
+                
+                if (currentLine.length()<3) {
+                    continue;
+                }
+                
                 //now tokenize the currentLine:
                 StringTokenizer st = new StringTokenizer(currentLine, " ", false);
                 //put tokens ot currentLine in map
