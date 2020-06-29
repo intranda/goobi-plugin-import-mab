@@ -80,9 +80,9 @@ public class MakeMetsMods {
         //        MakeMetsMods maker = new MakeMetsMods("resources/plugin_intranda_opac_mab.xml");
         //        maker.saveMMFile("resources/mab2-complete.txt", "/home/joel/git/rechtsgeschichte/test");
 
-        MakeMetsMods maker = new MakeMetsMods(strConfig);
+        MakeMetsMods maker = new MakeMetsMods(new XMLConfiguration(strConfig));
 
-        maker.parse(maker.config.getString("mabFile"));
+        maker.parse();
 
         //        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
     }
@@ -101,6 +101,17 @@ public class MakeMetsMods {
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
 
         config = new XMLConfiguration(strConfigFile);
+        setup(config);
+    }
+
+    public MakeMetsMods(XMLConfiguration config)
+            throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
+        setup(config);
+
+    }
+
+    private void setup(XMLConfiguration config)
+            throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
         lstMM = new ArrayList<MetsMods>();
         this.prefs = new Prefs();
         prefs.loadPrefs(config.getString(strRulesetPath));
@@ -110,7 +121,7 @@ public class MakeMetsMods {
 
         boWithSGML = config.getBoolean("withSGML");
         if (boWithSGML) {
-            sgmlParser = new SGMLParser(strConfigFile);
+            sgmlParser = new SGMLParser(config);
         }
 
         readTagsList(config.getString("tags"));
@@ -118,8 +129,9 @@ public class MakeMetsMods {
         metaMaker = new MetadataMaker(prefs);
     }
 
-    public void parse(String mabFile) throws IOException, UGHException, JDOMException {
+    public void parse() throws IOException, UGHException, JDOMException {
 
+        String mabFile = config.getString("mabFile");
         String text = ParsingUtils.readFileToString(new File(mabFile));
 
         if ((text != null) && (text.length() != 0)) {
@@ -303,7 +315,7 @@ public class MakeMetsMods {
         }
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
-        
+
         Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
         Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 

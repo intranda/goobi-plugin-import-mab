@@ -50,8 +50,7 @@ public class SGMLParser {
     //        parser.parse(sgml);
     //    }
 
-    public SGMLParser(String strConfigFile) throws ConfigurationException, PreferencesException {
-        config = new XMLConfiguration(strConfigFile);
+    public SGMLParser(XMLConfiguration config) throws ConfigurationException, PreferencesException {
         strOutputPath = config.getString(strConfigOutputPath);
         strImagePath = config.getString(strConfigImagePathFile);
         prefs = new Prefs();
