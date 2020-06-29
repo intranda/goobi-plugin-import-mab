@@ -279,6 +279,10 @@ public class SGMLParser {
         }
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
+        
+        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
+        
         fileCopy = new File(pathDest.toString());
 
         DocStructType pageType = prefs.getDocStrctTypeByName("page");

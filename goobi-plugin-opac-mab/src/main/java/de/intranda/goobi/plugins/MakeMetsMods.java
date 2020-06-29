@@ -70,7 +70,7 @@ public class MakeMetsMods {
             throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
 
         String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
-        //                String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
+        //                        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
 
         if (args.length > 0) {
             strConfig = args[0];
@@ -149,6 +149,9 @@ public class MakeMetsMods {
                     //start next
                     mm = makeMM(config.getString("defaultPublicationType"));
                     logical = mm.getDigitalDocument().getLogicalDocStruct();
+                    //collection:
+                    mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
+                    logical.addMetadata(mdCollection);
                 }
 
                 if (str.length() < 4) {
@@ -300,7 +303,9 @@ public class MakeMetsMods {
         }
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(pathSource, Paths.get(strNormalPath + pathSource.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        
+        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 
         File fileCopy = new File(pathDest.toString());
 
