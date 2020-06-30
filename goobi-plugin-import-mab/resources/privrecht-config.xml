@@ -1,0 +1,38 @@
+﻿﻿<config_plugin>
+
+    <config>
+        <!-- which projects to use for (can be more than one, otherwise use *) -->
+        <project>Project</project>
+        <project>Archive_Project</project>
+       
+    <!-- Ruleset for the MM files: -->
+    <rulesetPath>/home/joel/git/rechtsgeschichte/data/ruleset.xml</rulesetPath>
+
+    <!-- Path to images: -->
+    <imagePathFile>/home/joel/git/rechtsgeschichte/20190211 Datenlieferung/Testdaten Privatrecht 2019-01/images/</imagePathFile>
+    
+    <!-- Folder where the files are to be copied -->
+    <outputPath>/home/joel/git/rechtsgeschichte/testprivr/</outputPath>
+
+    <!-- Mab file to read: -->
+    <mabFile>/home/joel/git/rechtsgeschichte/testprivr/privatr-komplett.txt</mabFile>
+    
+    <!-- Ruleset for the MM files: -->
+    <tags>/home/joel/git/rechtsgeschichte/data/tags-full.txt</tags>
+    
+    <!-- Use SGML files? -->
+    <withSGML>true</withSGML>
+
+    <!-- Path to SGML files, if withSGML: -->
+    <sgmlPath>/home/joel/git/rechtsgeschichte/20200430 Datenlieferung/PrivatSGML/</sgmlPath>
+
+
+    <!-- default publication type if it cannot be detected. If missing or empty, no record will be created -->
+    <defaultPublicationType>Monograph</defaultPublicationType>
+
+    <!-- Collection name -->
+    <singleDigCollection>Privatrecht</singleDigCollection>
+
+
+</config>
+</config_plugin>

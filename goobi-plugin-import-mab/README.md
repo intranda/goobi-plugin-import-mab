@@ -23,8 +23,12 @@ Die Datei ```plugin_intranda_opac_mab.xml``` ist das Config-Datei.
 Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
 
 ```xml
+<config_plugin>
 <config>
 
+     <!-- which projects to use for (can be more than one, otherwise use *) -->
+    <project>Project</project>
+    
     <!-- Ruleset for the MM files: -->
     <rulesetPath>/opt/digiverso/goobi/rulesets/ruleset.xml</rulesetPath>
 
@@ -54,6 +58,7 @@ Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
     <singleDigCollection>Privatrecht</singleDigCollection>
 
 </config>
+</config_plugin>
 ```
 
 Eine Kopie liegt in dieser Repro, im Ordner "resources".
@@ -74,7 +79,7 @@ spezifiziert der mab2-Datei, die gelesen wird
 Das Element `"tags"`
 spezifiziert der Übersetzungs.Datei, welches mab2-Codes in MM Metadaten übersetzt.
 
-Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein, mit CatalogID als Name. Dieser werden benutzt, um das MM Struktur zu geben.
+Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein gesucht, mit CatalogID als Name. Dieser werden benutzt, um das MM Struktur zu geben.
 
 Das Element `"defaultPublicationType"`
 spezifiziert die MM Type der Dokument
@@ -91,4 +96,6 @@ Die Arbeitsweise sieht folgendermaßen aus:
 
 * Das Programm wird als JAR geöffnet, mit Pfad zur config-Datei als einziger Parameter.
 * Aus der config-Datei werden die Pfade zur mab2-Datei usw. ausgelesen, und der mad2-Datei wird durchlesen.
-* 
+* Für jeder Dataset in der Datei wird ein MetsMods Document erzeugt, mit possenden Metadaten. Die Übersetzung der einzelnen Felder passiert mittels der tags Datei.
+* Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein gesucht, mit CatalogID als Name. Die MM Document ebkommt devon dann Struktur.
+* Für jedes Page in der Document wird nach Images gesucht, in der `"imagePathFile"` Ornder, in Unterordner mit CatalogID als Name. Dieser werden 

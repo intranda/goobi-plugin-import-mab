@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
-<project name="goobi-plugin-opac-mab" default="devbuild">
+<project name="goobi-plugin-import-mab" default="devbuild">
 	<target name="devbuild">
 		<exec executable="mvn">
 			<arg value="package" />
 		</exec>
-		<copy file="target/plugin_intranda_opac_mab.jar" todir="/opt/digiverso/goobi/plugins/opac/"/>
+		<copy file="target/plugin_intranda_import_mab.jar" todir="/opt/digiverso/goobi/plugins/import/"/>
 	</target>
 </project>

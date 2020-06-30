@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.SystemUtils;
 import org.jsoup.Jsoup;
@@ -32,7 +33,7 @@ public class SGMLParser {
 
     private MetsMods mm;
     private DigitalDocument dd;
-    private XMLConfiguration config;
+    private SubnodeConfiguration config;
 
     private String strConfigRulesetPath = "rulesetPath";
     private String strConfigOutputPath = "outputPath";
@@ -42,15 +43,9 @@ public class SGMLParser {
     private DocStruct physical;
     private DocStruct logical;
 
-    //    ///Test
-    //    public static void main(String[] args) throws IOException, UGHException, ConfigurationException {
-    //        File sgml = new File("/home/joel/git/rechtsgeschichte/20190211 Datenlieferung/Testdaten Privatrecht 2019-01/sgml/37876.sgm");
-    //
-    //        SGMLParser parser = new SGMLParser("/home/joel/git/rechtsgeschichte/testdiss/test.xml");
-    //        parser.parse(sgml);
-    //    }
-
-    public SGMLParser(XMLConfiguration config) throws ConfigurationException, PreferencesException {
+    public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
+       
+        this.config = config;
         strOutputPath = config.getString(strConfigOutputPath);
         strImagePath = config.getString(strConfigImagePathFile);
         prefs = new Prefs();
@@ -317,22 +312,6 @@ public class SGMLParser {
 
     }
 
-    //        String strXHTML = htmlToXhtml(text);
-    //        String strXML = convertSGMLtoXML(strXHTML);
-    //
-    //        InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
-    //        SAXBuilder builder = new SAXBuilder();
-    //
-    //        Document doc = (Document) builder.build(stream);
-    //
-    //        Element rootNode = doc.getRootElement();
-    //
-    //        for (Element elt : rootNode.getChildren()) {
-    //
-    //            System.out.println(elt.getName());
-    //        }
-    //
-    //    }
 
     private Document getDoc(final String html) {
         final Document document = Jsoup.parse(html);
@@ -340,27 +319,5 @@ public class SGMLParser {
         return document;
     }
 
-    //    private String htmlToXhtml(final String html) {
-    //        final org.jsoup.nodes.Document document = Jsoup.parse(html);
-    //        document.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
-    //        return document.html();
-    //    }
-
-    //    private String convertSGMLtoXML(String text) {
-    //
-    //        String strXML = text.replace("<!DOCTYPE ebind PUBLIC \"-//UC Berkeley//DTD ebind.dtd (Electronic Binding (Ebind))//EN\">", "");
-    ////        String strXML = text.replace("<!DOCTYPE EBIND PUBLIC \"-//UC Berkeley//DTD ebind.dtd (Electronic Binding (Ebind))//EN\">", "<sgml>");
-    //        strXML = strXML.trim();
-    //
-    ////        strXML = "<?xml version=\"1.0\"?>" + System.lineSeparator() + strXML;
-    ////
-    ////        strXML = strXML.replace("ß", "&szlig");
-    ////        strXML = strXML.replace("&", "&amp;");
-    ////        strXML = strXML.replace("></PAGE>", "/></PAGE>");
-    //
-    ////        strXML = strXML + System.lineSeparator() + "</sgml>";
-    //
-    //        return strXML;
-    //    }
 
 }

@@ -18,12 +18,16 @@ import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jdom2.JDOMException;
 import org.xml.sax.SAXException;
 
+import de.sub.goobi.config.ConfigPlugins;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -49,7 +53,7 @@ public class MakeMetsMods {
     //
     private Prefs prefs;
     private HashMap<String, String> mapTags;
-    private XMLConfiguration config;
+    private SubnodeConfiguration config;
     private ArrayList<MetsMods> lstMM;
 
     private MetadataMaker metaMaker;
@@ -69,49 +73,38 @@ public class MakeMetsMods {
     public static void main(String[] args)
             throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
 
-        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
-        //                        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
-
+//        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
+       // String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
+        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
+                
         if (args.length > 0) {
             strConfig = args[0];
         }
 
-        //test diss:
-        //        MakeMetsMods maker = new MakeMetsMods("resources/plugin_intranda_opac_mab.xml");
-        //        maker.saveMMFile("resources/mab2-complete.txt", "/home/joel/git/rechtsgeschichte/test");
 
-        MakeMetsMods maker = new MakeMetsMods(new XMLConfiguration(strConfig));
+        XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
+        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
+
+        SubnodeConfiguration myconfig = null;
+        myconfig = xmlConfig.configurationAt("/config[./project = 'Project']");
+
+        MakeMetsMods maker = new MakeMetsMods(myconfig);
 
         maker.parse();
 
-        //        maker.saveMMFile("/home/joel/git/rechtsgeschichte/testdiss/privatr-test.txt", "/home/joel/git/rechtsgeschichte/testdiss");
     }
 
-    /**
-     * Constructor; takes path to the config file.
-     * 
-     * @param strConfigFile
-     * @throws PreferencesException
-     * @throws ConfigurationException
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public MakeMetsMods(String strConfigFile)
-            throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
-
-        config = new XMLConfiguration(strConfigFile);
-        setup(config);
-    }
-
-    public MakeMetsMods(XMLConfiguration config)
+    public MakeMetsMods(SubnodeConfiguration config)
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
         setup(config);
 
     }
 
-    private void setup(XMLConfiguration config)
+    private void setup(SubnodeConfiguration config)
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
+
+        this.config = config;
         lstMM = new ArrayList<MetsMods>();
         this.prefs = new Prefs();
         prefs.loadPrefs(config.getString(strRulesetPath));
@@ -413,70 +406,7 @@ public class MakeMetsMods {
         }
     }
 
-    //    public void asfasf() {
-    //
-    //        MetsMods mmAkte = makeMM("Dissertation");
-    //
-    //        DigitalDocument dd = mmAkte.getDigitalDocument();
-    //        DocStruct logical = dd.getLogicalDocStruct();
-    //        logical.addMetadataGroup(mdAkten);
-    //        logical.addMetadataGroup(mdBestand);
-    //        logical.addMetadataGroup(mdSystem);
-    //        logical.addMetadataGroup(mdKlass);
-    //
-    //        //make ID
-    //        makeId(mmAkte, nodeAkte);
-    //
-    //        //add the metadata and the groups:
-    //        List<Element> lstChildren = nodeAkte.getChildren();
-    //
-    //        for (int k = 0; k < lstChildren.size(); k++) {
-    //
-    //            Element node = (Element) lstChildren.get(k);
-    //
-    //            //for leaves:
-    //            if (node.getChildren().size() == 0) {
-    //                String strName = getTopLevelName(node.getName());
-    //                MetadataType type = prefs.getMetadataTypeByName(strName);
-    //                Metadata md = new Metadata(type);
-    //                md.setValue(node.getValue());
-    //                logical.addMetadata(md);
-    //                continue;
-    //            }
-    //
-    //            //for branches:
-    //            if (node.getName().contentEquals("folio")) {
-    //
-    //                addFolio(node, mmAkte, dd);
-    //
-    //            } else if (node.getName().contentEquals("ortsreg")) {
-    //
-    //                MetadataGroup mdOrtsreg = maker.getMetadata(node);
-    //                logical.addMetadataGroup(mdOrtsreg);
-    //
-    //            } else if (node.getName().contentEquals("vorsignatur")) {
-    //
-    //                MetadataGroup mdPersreg = maker.getMetadata(node);
-    //                logical.addMetadataGroup(mdPersreg);
-    //
-    //            } else if (node.getName().contentEquals("persreg")) {
-    //
-    //                MetadataGroup mdPersreg = maker.getMetadata(node);
-    //                logical.addMetadataGroup(mdPersreg);
-    //
-    //            } else if (node.getName().contentEquals("sachreg")) {
-    //
-    //                MetadataGroup mdPersreg = maker.getMetadata(node);
-    //                logical.addMetadataGroup(mdPersreg);
-    //
-    //            } else {
-    //                throw new UGHException("Missed a metadata");
-    //            }
-    //        }
-    //
-    //        saveMM(mmAkte, strFolderForMM);
-    //    }
-
+   
     /**
      * Make a Mets/Mods object, and add it to the physical DocStruct as a BoundBook.
      * 
