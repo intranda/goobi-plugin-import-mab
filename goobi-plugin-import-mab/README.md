@@ -7,7 +7,7 @@ Das Programm untersucht die hinterlegte MAB2-Datei, und übersetzt die Felder Me
 
 ## Installation und Konfiguration
 
-Das Programm besteht aus drie Dateien:
+Das Programm besteht aus drei Dateien:
 
 ```bash
 plugin_intranda_opac_mab.jar
@@ -63,6 +63,8 @@ Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
 
 Eine Kopie liegt in dieser Repro, im Ordner "resources".
 
+Das Element `"project"`
+soll im Moment nur den Eintrag "Project" haben; später können wir es Projektspezyfisch mahchen.
 
 Das Element `"rulesetPath"`
 liefert der Pfad zur Ruleset für die MetsMods Dateien.
@@ -98,4 +100,5 @@ Die Arbeitsweise sieht folgendermaßen aus:
 * Aus der config-Datei werden die Pfade zur mab2-Datei usw. ausgelesen, und der mad2-Datei wird durchlesen.
 * Für jeder Dataset in der Datei wird ein MetsMods Document erzeugt, mit possenden Metadaten. Die Übersetzung der einzelnen Felder passiert mittels der tags Datei.
 * Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein gesucht, mit CatalogID als Name. Die MM Document ebkommt devon dann Struktur.
-* Für jedes Page in der Document wird nach Images gesucht, in der `"imagePathFile"` Ornder, in Unterordner mit CatalogID als Name. Dieser werden 
+* Für jedes Page in der Document wird nach Images gesucht, in der `"imagePathFile"` Ornder, in Unterordner mit CatalogID als Name. Dieser werden dann nach die Image Ordner kopiert, und Referenzen in der Structmap gemacht.
+* Danach kann mit der Goobi Folder Import die Prozesse importiert werden. 

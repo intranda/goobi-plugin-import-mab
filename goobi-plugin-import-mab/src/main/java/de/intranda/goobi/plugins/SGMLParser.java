@@ -44,7 +44,7 @@ public class SGMLParser {
     private DocStruct logical;
 
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
-       
+
         this.config = config;
         strOutputPath = config.getString(strConfigOutputPath);
         strImagePath = config.getString(strConfigImagePathFile);
@@ -133,7 +133,7 @@ public class SGMLParser {
                     DocStruct page = getAndSavePage(eltImg);
                     if (page != null) {
                         physical.addChild(page);
-                        //                        logical.addReferenceTo(page, "logical_physical");
+                        logical.addReferenceTo(page, "logical_physical");
                         dsEintrag.addReferenceTo(page, "logical_physical");
                     }
                 }
@@ -273,10 +273,10 @@ public class SGMLParser {
         }
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
-        
+
         Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
         Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
-        
+
         fileCopy = new File(pathDest.toString());
 
         DocStructType pageType = prefs.getDocStrctTypeByName("page");
@@ -312,12 +312,10 @@ public class SGMLParser {
 
     }
 
-
     private Document getDoc(final String html) {
         final Document document = Jsoup.parse(html);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         return document;
     }
-
 
 }

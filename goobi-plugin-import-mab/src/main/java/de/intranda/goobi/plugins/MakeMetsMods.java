@@ -74,8 +74,8 @@ public class MakeMetsMods {
             throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
 
 //        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
-       // String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
-        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
+        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
+//        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
                 
         if (args.length > 0) {
             strConfig = args[0];
