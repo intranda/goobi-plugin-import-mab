@@ -1,8 +1,12 @@
 package de.intranda.goobi.plugins;
 
+import java.lang.reflect.Type;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -27,7 +31,11 @@ import org.apache.commons.lang.SystemUtils;
 import org.jdom2.JDOMException;
 import org.xml.sax.SAXException;
 
-import de.sub.goobi.config.ConfigPlugins;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -40,7 +48,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
 
-public class MakeMetsMods {
+public class MakeMetsModsDiss {
 
     //these are the xml config fields:
     private String strRulesetPath = "rulesetPath";
@@ -50,11 +58,20 @@ public class MakeMetsMods {
     private String strCurrentPath;
     private SGMLParser sgmlParser;
 
+    //Map with parents as key, and lists of their children as value
+    HashMap<String, List<String>> map;
+
+    //Map with children as key, parent as value.
+    HashMap<String, String> mapRev;
+
     //
     private Prefs prefs;
     private HashMap<String, String> mapTags;
     private SubnodeConfiguration config;
     private ArrayList<MetsMods> lstMM;
+
+    //MultiVolumeWorks, keyed by their Ids
+    private HashMap<String, MetsMods> mapMVWs;
 
     private MetadataMaker metaMaker;
     private Boolean boWithSGML;
@@ -69,33 +86,34 @@ public class MakeMetsMods {
 
     //and all top level metadata:
     ArrayList<String> lstTopLevelMetadata;
+    private DocStruct currentVolume;
 
-    public static void main(String[] args)
-            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
+//    public static void main(String[] args)
+//            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
+//
+//        //        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
+//        //        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
+//        //        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
+//        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss4/diss-config4.xml";
+//
+//        if (args.length > 0) {
+//            strConfig = args[0];
+//        }
+//
+//        XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
+//        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+//        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
+//
+//        SubnodeConfiguration myconfig = null;
+//        myconfig = xmlConfig.configurationAt("/config[./project = 'Project']");
+//
+//        MakeMetsModsDiss maker = new MakeMetsModsDiss(myconfig);
+//
+//        maker.parse();
+//
+//    }
 
-//        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
-        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
-//        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
-                
-        if (args.length > 0) {
-            strConfig = args[0];
-        }
-
-
-        XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
-        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
-        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
-
-        SubnodeConfiguration myconfig = null;
-        myconfig = xmlConfig.configurationAt("/config[./project = 'Project']");
-
-        MakeMetsMods maker = new MakeMetsMods(myconfig);
-
-        maker.parse();
-
-    }
-
-    public MakeMetsMods(SubnodeConfiguration config)
+    public MakeMetsModsDiss(SubnodeConfiguration config)
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
         setup(config);
 
@@ -104,6 +122,7 @@ public class MakeMetsMods {
     private void setup(SubnodeConfiguration config)
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
 
+        this.mapMVWs = new HashMap<String, MetsMods>();
         this.config = config;
         lstMM = new ArrayList<MetsMods>();
         this.prefs = new Prefs();
@@ -117,19 +136,41 @@ public class MakeMetsMods {
             sgmlParser = new SGMLParser(config);
         }
 
-        readTagsList(config.getString("tags"));
-
         metaMaker = new MetadataMaker(prefs);
     }
 
+    private void readJson() throws JsonIOException, JsonSyntaxException, FileNotFoundException {
+
+        Gson gson = new Gson();
+        Type typeMap = new TypeToken<HashMap<String, List<String>>>() {
+        }.getType();
+        Type typeRevMap = new TypeToken<HashMap<String, String>>() {
+        }.getType();
+
+        this.map = gson.fromJson(new FileReader(config.getString("mapMVW")), typeMap);
+        this.mapRev = gson.fromJson(new FileReader(config.getString("mapChildren")), typeRevMap);
+
+    }
+
     public void parse() throws IOException, UGHException, JDOMException {
+
+        readTagsList();
+
+        readJson();
+
+        collectMultiVolumeWorks();
+
+        saveMMs();
+    }
+
+    public void collectMultiVolumeWorks() throws IOException, UGHException, JDOMException {
 
         String mabFile = config.getString("mabFile");
         String text = ParsingUtils.readFileToString(new File(mabFile));
 
         if ((text != null) && (text.length() != 0)) {
 
-            MetsMods mm = makeMM(config.getString("defaultPublicationType"));
+            MetsMods mm = makeMM("MultiVolumeWork");
             DocStruct logical = mm.getDigitalDocument().getLogicalDocStruct();
 
             //collection:
@@ -139,20 +180,23 @@ public class MakeMetsMods {
             BufferedReader reader = new BufferedReader(new StringReader(text));
             String str = "";
 
+            Boolean boMVW = false;
+            String strCurrentId = "";
+
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
 
                 //finished one ?
-                if (str.length() == 0) {
+                if (str.length() == 0 && boMVW) {
 
                     if (boWithSGML) {
                         sgmlParser.addSGML(mm);
                     }
 
-                    saveMM(mm, strCurrentPath);
+                    mapMVWs.put(strCurrentId, mm);
 
                     //start next
-                    mm = makeMM(config.getString("defaultPublicationType"));
+                    mm = makeMM("MultiVolumeWork");
                     logical = mm.getDigitalDocument().getLogicalDocStruct();
                     //collection:
                     mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
@@ -168,9 +212,189 @@ public class MakeMetsMods {
                 try {
 
                     if (str.length() > 5) {
+
                         // Data field
                         int iValue = str.indexOf(":");
                         String content = str.substring(iValue + 1, str.length());
+
+                        //Check for parent:
+                        if (tag.contentEquals("0000")) {
+                            boMVW = map.containsKey(content);
+                        }
+
+                        //only carry on for parents
+                        if (!boMVW) {
+                            continue;
+                        }
+
+                        //no images for MVWs
+                        //                        if (!boWithSGML && tag.equals("1040")) {
+                        //                            addImageFiles(content, mm);
+                        //                            continue;
+                        //                        }
+
+//                        //For MVW, use SeriesOrder instead of CurrentNoSorting
+//                        if (boMVW && tag.equals("0024")) {
+//                            tag = "0089";
+//                        }
+//                        
+                        Metadata md = metaMaker.getMetadata(mapTags.get(tag), content);
+                        if (md != null) {
+
+                            //already have title? then include as OtherTitle
+                            if (md.getType().getName().equals("TitleDocMain")) {
+
+                                if (logical.getAllMetadataByType(prefs.getMetadataTypeByName("TitleDocMain")).size() != 0) {
+                                    md = metaMaker.getMetadata("OtherTitle", content);
+                                }
+                            }
+
+                            if (md.getType().getIsPerson()) {
+                                logical.addPerson((Person) md);
+                            } else {
+                                logical.addMetadata(md);
+                            }
+
+                            //set GoobiId:
+                            if (md.getType().getName().equals("CatalogIDDigital")) {
+                                strCurrentId = content;
+//                                mm.setGoobiID(strCurrentId);
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    System.out.println(e.getMessage());
+                }
+            }
+
+        }
+    }
+
+    public void saveMMs() throws IOException, UGHException, JDOMException {
+
+        String mabFile = config.getString("mabFile");
+        String text = ParsingUtils.readFileToString(new File(mabFile));
+
+        String strFolder = config.getString(strOutputPath);
+        if (!strFolder.endsWith("/")) {
+            strFolder = strFolder + "/";
+        }
+
+        if ((text != null) && (text.length() != 0)) {
+
+            MetsMods mm = makeMM(config.getString("defaultPublicationType"));
+            DocStruct logical = mm.getDigitalDocument().getLogicalDocStruct();
+
+            //collection:
+            Metadata mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
+            logical.addMetadata(mdCollection);
+
+            BufferedReader reader = new BufferedReader(new StringReader(text));
+            String str = "";
+            Boolean boMVW = false;
+            Boolean boChild = false;
+            String strCurrentId = "";
+
+            while ((str = reader.readLine()) != null) {
+                str = str.trim();
+
+                //finished one ?
+                if (str.length() == 0 && !boMVW) {
+
+                    if (boWithSGML) {
+                        sgmlParser.addSGML(mm);
+                    }
+
+                    saveMM(mm, strCurrentPath);
+
+                }
+
+                if (str.length() < 4) {
+                    continue;
+                }
+
+                String tag = str.substring(0, 4);
+
+                try {
+
+                    if (str.length() > 5) {
+                        // Data field
+                        int iValue = str.indexOf(":");
+                        String content = str.substring(iValue + 1, str.length());
+
+                        //Check for parent:
+                        if (tag.contentEquals("0000")) {
+                            boMVW = map.containsKey(content);
+                            boChild = mapRev.containsKey(content);
+
+                            if (!boChild) {
+                                currentVolume = null;
+                            }
+
+                            //only carry if not parent
+                            if (boMVW) {
+                                continue;
+                            }
+
+                            strCurrentId = content;
+                            strCurrentPath = strFolder + strCurrentId + "/";
+                            new File(strCurrentPath).mkdir();
+
+                            //start new MM:
+                            String strType = "Monograph";
+                            if (boChild) {
+                                strType = "Volume";
+                            }
+
+                            mm = makeMM(strType);
+
+                            if (boChild) {
+                                //for a volume, get the logical docstruct of the parent, and add the Volume to it:
+                                String strParent = mapRev.get(strCurrentId);
+
+                                if (mapMVWs.containsKey(strParent)) {
+                                    MetsMods mmParent = mapMVWs.get(strParent);
+                                    mmParent = clone(mmParent);
+
+                                    logical = mmParent.getDigitalDocument().getLogicalDocStruct();
+                                    //collection:
+
+
+                                    DocStruct volume = mmParent.getDigitalDocument().createDocStruct(prefs.getDocStrctTypeByName("Volume"));
+                                    currentVolume = volume;
+                                    mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
+                                    volume.addMetadata(mdCollection);
+                                    
+                                    logical.addChild(volume);
+
+                                    mm = mmParent;
+
+                                    //for the rest of the data, the logical structure is that of the volume:
+                                    logical = volume;
+                                } else {
+                                    //no parent? then treat it as a normal mono
+                                    boChild = false;
+                                    currentVolume = null;
+                                }
+
+                            }
+                            //for a monograph, just make the MM
+                            if (!boChild) {
+                                logical = mm.getDigitalDocument().getLogicalDocStruct();
+                                //collection:
+                                mdCollection = metaMaker.getMetadata("singleDigCollection", config.getString("singleDigCollection"));
+                                logical.addMetadata(mdCollection);
+                                currentVolume = null;
+                            }
+
+                        }
+
+                        //only carry if not parent
+                        if (boMVW) {
+                            continue;
+                        }
 
                         if (!boWithSGML && tag.equals("1040")) {
                             addImageFiles(content, mm);
@@ -191,18 +415,20 @@ public class MakeMetsMods {
                             if (md.getType().getIsPerson()) {
                                 logical.addPerson((Person) md);
                             } else {
+                                //CatalogIDMainSeries from 0004 trump it from 0001
+                                if (tag.equals("0004") && !logical.getAllMetadataByType(md.getType()).isEmpty()) {
+                                    logical.removeMetadata(logical.getAllMetadataByType(md.getType()).get(0));
+                                }
+                                
                                 logical.addMetadata(md);
                             }
 
                             //set GoobiId:
                             if (md.getType().getName().equals("CatalogIDDigital")) {
-                                mm.setGoobiID(content);
-                                String strFolder = config.getString(strOutputPath);
-                                if (!strFolder.endsWith("/")) {
-                                    strFolder = strFolder + "/";
-                                }
-                                strCurrentPath = strFolder + content + "/";
-                                new File(strCurrentPath).mkdir();
+
+                                strCurrentId = content;
+//                                mm.setGoobiID(strCurrentId);
+
                             }
                         }
 
@@ -214,6 +440,16 @@ public class MakeMetsMods {
             }
 
         }
+    }
+
+    private MetsMods clone(MetsMods mmParent) throws UGHException {
+
+        DocStruct logi = mmParent.getDigitalDocument().getLogicalDocStruct().copy(true, true);
+
+        MetsMods mm = makeMM("MultiVolumeWork");
+        mm.getDigitalDocument().setLogicalDocStruct(logi);
+
+        return mm;
     }
 
     /**
@@ -241,8 +477,10 @@ public class MakeMetsMods {
         } else {
             String[] lstStrings = strRem.split(" ; ");
             for (int i = 0; i < lstStrings.length; i++) {
-                String strImage = lstStrings[i].replace("Widmung01: ", "");
-                strImage = strImage.replace("Widmung02: ", "");
+                String strImage = lstStrings[i].replace("Widmung01:", "");
+                strImage = strImage.replace("Widmung02:", "");
+                strImage = strImage.replace("Widmung03:", "");
+                strImage = strImage.replace("Widmung04:", "");
                 lstImages.add(strImage.trim());
             }
         }
@@ -252,7 +490,7 @@ public class MakeMetsMods {
             DocStruct physical = dd.getPhysicalDocStruct();
             DocStruct logical = dd.getLogicalDocStruct();
 
-            String strFilename = config.getString(strImagePathFile) + strImage + ".jpg";
+            String strFilename = strImage + ".jpg"; // config.getString(strImagePathFile) + strImage + ".jpg";
 
             DocStruct page = null;
 
@@ -260,7 +498,11 @@ public class MakeMetsMods {
             page = getAndSavePage(strFilename, mm, page);
             if (page != null) {
                 physical.addChild(page);
-                logical.addReferenceTo(page, "logical_physical");
+                if (currentVolume != null) {
+                    currentVolume.addReferenceTo(page, "logical_physical");
+                } else {
+                    logical.addReferenceTo(page, "logical_physical");
+                }
             }
         }
     }
@@ -280,8 +522,10 @@ public class MakeMetsMods {
      */
     private DocStruct getAndSavePage(String strDatei, MetsMods mm, DocStruct page) throws UGHException, IOException {
 
-        File file = new File(strDatei);
-        if (!file.exists()) {
+        File file = getImageFile(strDatei);
+        if (file == null || !file.exists()) {
+
+            System.out.println(strDatei);
             return null;
         }
 
@@ -291,26 +535,26 @@ public class MakeMetsMods {
         new File(strImageFolder).mkdirs();
 
         //copy original file:
-        String strMasterPrefix = "master_";
+        //        String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix + mm.getGoobiID() + strMediaSuffix + File.separator;
+        //        String strMasterPath = strImageFolder + strMasterPrefix + mm.getGoobiID() + strMediaSuffix + File.separator;
         String strNormalPath = strImageFolder + mm.getGoobiID() + strMediaSuffix + File.separator;
 
-        new File(strMasterPath).mkdirs();
+        //        new File(strMasterPath).mkdirs();
         new File(strNormalPath).mkdirs();
 
-        Path pathSource = Paths.get(strDatei);
+        Path pathSource = Paths.get(file.getAbsolutePath());
         Path pathDest = Paths.get(strNormalPath + strDatei.toLowerCase());
 
-        //first aufruf: make the master file
-        if (page == null) {
-            pathDest = Paths.get(strMasterPath + pathSource.getFileName());
-        }
+        //        //first aufruf: make the master file
+        //        if (page == null) {
+        //            pathDest = Paths.get(strMasterPath + pathSource.getFileName());
+        //        }
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
 
-        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
-        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
+        //        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+        //        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 
         File fileCopy = new File(pathDest.toString());
 
@@ -329,7 +573,11 @@ public class MakeMetsMods {
             MetadataType typeLogPage = prefs.getMetadataTypeByName("logicalPageNumber");
             Metadata mdLogPage = new Metadata(typeLogPage);
 
-            String strPage = FilenameUtils.removeExtension(strDatei);
+            String strPage =FilenameUtils.getBaseName(file.getAbsolutePath());
+            
+            if (strPage.lastIndexOf("-") != -1) {
+                strPage = strPage.substring(strPage.lastIndexOf("-")+1, strPage.length());
+            }
 
             //remove the ID number and leading 0s from the beginning:
             if (mm.getGoobiID() != null && mm.getGoobiID().length() > 3) {
@@ -338,7 +586,7 @@ public class MakeMetsMods {
                 strPage = strPage.replace(strId, "");
                 strPage = strPage.replaceFirst("^0+(?!$)", "");
             }
-
+            
             mdLogPage.setValue(strPage);
             dsPage.addMetadata(mdLogPage);
 
@@ -370,6 +618,15 @@ public class MakeMetsMods {
 
     }
 
+    private File getImageFile(String strImage) {
+
+        String strFolder = strImage.substring(0, 4).toUpperCase();
+        String strPath = config.getString(strImagePathFile) + strFolder + "/" + strImage;
+        File file = new File(strPath);
+        return file;
+
+    }
+
     /**
      * Using ExamineXML, we have created a file listing image files together with their paths. This method reads that file, taking it into a local
      * hashmap to be used in the xml conversion.
@@ -377,8 +634,9 @@ public class MakeMetsMods {
      * @param strFileList
      * @throws IOException
      */
-    private void readTagsList(String strFileList) throws IOException {
+    private void readTagsList() throws IOException {
 
+        String strFileList = config.getString("tags");
         File toRead = new File(strFileList);
         FileInputStream fis = new FileInputStream(toRead);
         Scanner sc = new Scanner(fis);
@@ -406,7 +664,6 @@ public class MakeMetsMods {
         }
     }
 
-   
     /**
      * Make a Mets/Mods object, and add it to the physical DocStruct as a BoundBook.
      * 

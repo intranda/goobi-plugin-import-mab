@@ -1,6 +1,5 @@
 package de.intranda.goobi.plugins;
 
-
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
@@ -11,7 +10,7 @@ public class MetadataMaker {
 
     private Prefs prefs;
 
-    public MetadataMaker(Prefs prefs ) {
+    public MetadataMaker(Prefs prefs) {
 
         this.prefs = prefs;
 
@@ -24,12 +23,15 @@ public class MetadataMaker {
         }
 
         MetadataType type = prefs.getMetadataTypeByName(strElt);
-
+        
         Metadata md = new Metadata(type);
         if (type.getIsPerson()) { // .getName().equals("Author")) {
             md = new Person(type);
             setPersonData(md, content);
         } else {
+            if (strElt.equals("CatalogIDMainSeries")&& content.startsWith("000")) {
+                content = content.replaceFirst("000", "");
+            }
             md.setValue(content);
         }
 
@@ -42,7 +44,8 @@ public class MetadataMaker {
         Person person = (Person) md;
         String[] parts = content.split(",");
         person.setLastname(parts[0]);
-
+        person.setFirstname("");
+        
         if (parts.length > 1) {
             String strFirst = parts[1];
             for (int i = 2; i < parts.length; i++) {

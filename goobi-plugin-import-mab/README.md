@@ -50,6 +50,11 @@ Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
     <!-- Path to SGML files, if withSGML: -->
     <sgmlPath>/path/to/SGML-Folder/</sgmlPath>
 
+     <!-- Mapping for MultiVolumeWork to child Volumes: -->
+    <mapMVW>/path/to/map.txt</mapMVW>
+    
+     <!-- Mapping for child Volumes to parent MultiVolumeWork: -->
+    <mapChildren>/path/to/mapRev.txt</mapChildren>
 
     <!-- default publication type. If missing or empty, no record will be created -->
     <defaultPublicationType>Monograph</defaultPublicationType>

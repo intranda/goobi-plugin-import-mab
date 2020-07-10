@@ -34,7 +34,7 @@
               </filters>
               <transformers>
                 <transformer>
-                  <mainClass>de.intranda.goobi.plugins.MakeMetsMods</mainClass>
+                  <mainClass>de.intranda.goobi.plugins.App</mainClass>
                 </transformer>
               </transformers>
             </configuration>

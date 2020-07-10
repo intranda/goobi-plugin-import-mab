@@ -5,7 +5,7 @@
 	<artifactId>goobi-plugin-import-mab</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-    
+
 	<properties>
 		<jar.name>plugin_intranda_import_mab</jar.name>
 		<dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
@@ -22,104 +22,104 @@
 			<url>https://nexus.intranda.com/repository/maven-public</url>
 		</repository>
 	</repositories>
-<!-- 	<build> -->
-<!-- 		<finalName>${jar.name}</finalName> -->
-<!-- 		<sourceDirectory>src/main/java</sourceDirectory> -->
-<!-- 		<testSourceDirectory>src/test/java</testSourceDirectory> -->
-<!-- 		<resources> -->
-<!-- 			<resource> -->
-<!-- 				<directory>src/main/java</directory> -->
-<!-- 				<excludes> -->
-<!-- 					<exclude>**/*.java</exclude> -->
-<!-- 				</excludes> -->
-<!-- 			</resource> -->
-<!-- 		</resources> -->
-<!-- 		<plugins> -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
-<!-- 				<version>3.7.0</version> -->
-<!-- 				<configuration> -->
-<!-- 					<source>1.8</source> -->
-<!-- 					<target>1.8</target> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-surefire-plugin</artifactId> -->
-<!-- 				<version>2.12.4</version> -->
-<!-- 				<configuration> -->
-<!-- 					<skipTests>true</skipTests> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-<!-- 		</plugins> -->
-<!-- 	</build> -->
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.intranda.goobi.plugins.MakeMetsMods</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <commitIdGenerationMode>flat</commitIdGenerationMode>
-                    <gitDescribe>
-                        <skip>true</skip>
-                    </gitDescribe>
-                </configuration>
-            </plugin>
-            <plugin>  
-               <artifactId>maven-compiler-plugin</artifactId>
-               <version>3.7.0</version>
-               <configuration>
-                   <source>1.8</source>
-                   <target>1.8</target>
-               </configuration>
-           </plugin>
-        </plugins>
-    </build>
-    
+	<!-- <build> -->
+	<!-- <finalName>${jar.name}</finalName> -->
+	<!-- <sourceDirectory>src/main/java</sourceDirectory> -->
+	<!-- <testSourceDirectory>src/test/java</testSourceDirectory> -->
+	<!-- <resources> -->
+	<!-- <resource> -->
+	<!-- <directory>src/main/java</directory> -->
+	<!-- <excludes> -->
+	<!-- <exclude>**/*.java</exclude> -->
+	<!-- </excludes> -->
+	<!-- </resource> -->
+	<!-- </resources> -->
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+	<!-- <version>3.7.0</version> -->
+	<!-- <configuration> -->
+	<!-- <source>1.8</source> -->
+	<!-- <target>1.8</target> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-surefire-plugin</artifactId> -->
+	<!-- <version>2.12.4</version> -->
+	<!-- <configuration> -->
+	<!-- <skipTests>true</skipTests> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+	<!-- </build> -->
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>de.intranda.goobi.plugins.App</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<commitIdGenerationMode>flat</commitIdGenerationMode>
+					<gitDescribe>
+						<skip>true</skip>
+					</gitDescribe>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
@@ -175,12 +175,19 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.13.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>de.intranda.goobi.plugins.import</groupId>
 			<artifactId>import-intranda</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.2</version>
+		</dependency>
+
 	</dependencies>
 </project>
