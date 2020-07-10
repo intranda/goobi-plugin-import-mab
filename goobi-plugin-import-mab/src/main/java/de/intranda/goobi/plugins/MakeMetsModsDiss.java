@@ -69,6 +69,8 @@ public class MakeMetsModsDiss {
     private HashMap<String, String> mapTags;
     private SubnodeConfiguration config;
     private ArrayList<MetsMods> lstMM;
+    
+    private int iStopImportAfter = 0;
 
     //MultiVolumeWorks, keyed by their Ids
     private HashMap<String, MetsMods> mapMVWs;
@@ -131,6 +133,8 @@ public class MakeMetsModsDiss {
         lstMissingFiles = new ArrayList<String>();
         lstTopLevelMetadata = new ArrayList<String>();
 
+        iStopImportAfter = config.getInt("importFirst", 0);
+        
         boWithSGML = config.getBoolean("withSGML");
         if (boWithSGML) {
             sgmlParser = new SGMLParser(config);
@@ -274,6 +278,7 @@ public class MakeMetsModsDiss {
 
     public void saveMMs() throws IOException, UGHException, JDOMException {
 
+        int iImported = 0;
         String mabFile = config.getString("mabFile");
         String text = ParsingUtils.readFileToString(new File(mabFile));
 
@@ -308,7 +313,12 @@ public class MakeMetsModsDiss {
                     }
 
                     saveMM(mm, strCurrentPath);
-
+                    
+                    //stop the import? 
+                    iImported++;
+                    if (iStopImportAfter != 0 && iImported >= iStopImportAfter) {
+                        break;
+                    }
                 }
 
                 if (str.length() < 4) {
