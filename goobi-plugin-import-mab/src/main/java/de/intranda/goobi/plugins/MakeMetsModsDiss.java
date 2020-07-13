@@ -407,7 +407,7 @@ public class MakeMetsModsDiss {
                         }
 
                         if (!boWithSGML && tag.equals("1040")) {
-                            addImageFiles(content, mm);
+                            addImageFiles(content, mm, strCurrentId);
                             continue;
                         }
 
@@ -467,11 +467,12 @@ public class MakeMetsModsDiss {
      * 
      * @param strFilename
      * @param mm
+     * @param strCurrentId 
      * @param physical
      * @throws UGHException
      * @throws IOException
      */
-    private void addImageFiles(String strValue, MetsMods mm) throws UGHException, IOException {
+    private void addImageFiles(String strValue, MetsMods mm, String strCurrentId) throws UGHException, IOException {
 
         String strTitel = "Dateinamen Bilder Dissprojekt: Titelblatt: ";
         if (!strValue.startsWith(strTitel)) {
@@ -485,12 +486,19 @@ public class MakeMetsModsDiss {
         if (!strRem.contains(";")) {
             lstImages.add(strRem);
         } else {
-            String[] lstStrings = strRem.split(" ; ");
+            String[] lstStrings = strRem.split(";");
             for (int i = 0; i < lstStrings.length; i++) {
                 String strImage = lstStrings[i].replace("Widmung01:", "");
                 strImage = strImage.replace("Widmung02:", "");
                 strImage = strImage.replace("Widmung03:", "");
                 strImage = strImage.replace("Widmung04:", "");
+                strImage = strImage.replace("Widmung05:", "");
+                strImage = strImage.replace("Widmung06:", "");
+                strImage = strImage.replace("Widmung07:", "");
+                strImage = strImage.replace("Widmung08:", "");
+                strImage = strImage.replace("Widmung09:", "");
+                strImage = strImage.replace("Widmung10:", "");
+                strImage = strImage.replace("Widmung11:", "");
                 lstImages.add(strImage.trim());
             }
         }
@@ -505,7 +513,7 @@ public class MakeMetsModsDiss {
             DocStruct page = null;
 
             //this returns null if the page already exists; in that case, add the file to the existing page
-            page = getAndSavePage(strFilename, mm, page);
+            page = getAndSavePage(strFilename, mm, page, strCurrentId);
             if (page != null) {
                 physical.addChild(page);
                 if (currentVolume != null) {
@@ -530,31 +538,34 @@ public class MakeMetsModsDiss {
      * @throws UGHException
      * @throws IOException
      */
-    private DocStruct getAndSavePage(String strDatei, MetsMods mm, DocStruct page) throws UGHException, IOException {
+    private DocStruct getAndSavePage(String strDatei, MetsMods mm, DocStruct page, String strCurrentId) throws UGHException, IOException {
 
         File file = getImageFile(strDatei);
         if (file == null || !file.exists()) {
 
-            System.out.println(strDatei);
+            System.out.println(strCurrentId +  "  -  " + strDatei);
             return null;
         }
-
+                
+        String strId = strCurrentId;
+        
         //otherwise:        
         //create subfolder for images, as necessary:
         String strImageFolder = strCurrentPath + "/images/";
         new File(strImageFolder).mkdirs();
 
         //copy original file:
-        //        String strMasterPrefix = "master_";
+        String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        //        String strMasterPath = strImageFolder + strMasterPrefix + mm.getGoobiID() + strMediaSuffix + File.separator;
-        String strNormalPath = strImageFolder + mm.getGoobiID() + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix + strCurrentId + strMediaSuffix + File.separator;
+//        String strNormalPath = strImageFolder + strCurrentId + strMediaSuffix + File.separator;
 
-        //        new File(strMasterPath).mkdirs();
-        new File(strNormalPath).mkdirs();
+        new File(strMasterPath).mkdirs();
+//        new File(strNormalPath).mkdirs();
 
         Path pathSource = Paths.get(file.getAbsolutePath());
-        Path pathDest = Paths.get(strNormalPath + strDatei.toLowerCase());
+//        Path pathDest = Paths.get(strNormalPath + strDatei.toLowerCase());
+        Path pathDest = Paths.get(strMasterPath + strDatei.toLowerCase());
 
         //        //first aufruf: make the master file
         //        if (page == null) {
@@ -563,8 +574,8 @@ public class MakeMetsModsDiss {
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
 
-        //        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
-        //        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
+//                Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+//                Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 
         File fileCopy = new File(pathDest.toString());
 
@@ -590,9 +601,7 @@ public class MakeMetsModsDiss {
             }
 
             //remove the ID number and leading 0s from the beginning:
-            if (mm.getGoobiID() != null && mm.getGoobiID().length() > 3) {
-                String strId = mm.getGoobiID();
-
+            if (strId != null && strId.length() > 3) {
                 strPage = strPage.replace(strId, "");
                 strPage = strPage.replaceFirst("^0+(?!$)", "");
             }
