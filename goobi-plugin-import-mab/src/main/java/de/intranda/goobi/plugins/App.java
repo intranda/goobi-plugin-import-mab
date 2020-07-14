@@ -42,14 +42,14 @@ public class App {
         SubnodeConfiguration myconfig = null;
         myconfig = xmlConfig.configurationAt("/config[./project = 'Project']");
 
-        Boolean boWithSGML = myconfig.getBoolean("withSGML", false);
+//        Boolean boWithSGML = myconfig.getBoolean("withSGML", false);
 
-        if (boWithSGML) {
-            MakeMetsModsPriv maker = new MakeMetsModsPriv(myconfig);
+//        if (boWithSGML) {
+//            MakeMetsModsOld maker = new MakeMetsModsOld(myconfig);
+//            maker.parse();
+//        } else {
+            MakeMetsMods maker = new MakeMetsMods(myconfig);
             maker.parse();
-        } else {
-            MakeMetsModsDiss maker = new MakeMetsModsDiss(myconfig);
-            maker.parse();
-        }
+//        }
     }
 }

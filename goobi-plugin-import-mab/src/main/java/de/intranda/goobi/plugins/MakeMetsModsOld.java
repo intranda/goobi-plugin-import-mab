@@ -48,7 +48,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
 
-public class MakeMetsModsPriv {
+public class MakeMetsModsOld {
 
     //these are the xml config fields:
     private String strRulesetPath = "rulesetPath";
@@ -109,7 +109,7 @@ public class MakeMetsModsPriv {
 //
 //    }
 
-    public MakeMetsModsPriv(SubnodeConfiguration config)
+    public MakeMetsModsOld(SubnodeConfiguration config)
             throws PreferencesException, ConfigurationException, ParserConfigurationException, SAXException, IOException {
         setup(config);
 
@@ -164,7 +164,7 @@ public class MakeMetsModsPriv {
                 if (str.length() == 0) {
 
                     if (boWithSGML) {
-                        sgmlParser.addSGML(mm);
+                        sgmlParser.addSGML(mm, null);
                     }
 
                     saveMM(mm, strCurrentPath);

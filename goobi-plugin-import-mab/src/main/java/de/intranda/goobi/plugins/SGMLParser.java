@@ -42,6 +42,7 @@ public class SGMLParser {
     private int iCurrentPageNo;
     private DocStruct physical;
     private DocStruct logical;
+    private DocStruct currentVolume;
 
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
 
@@ -52,13 +53,14 @@ public class SGMLParser {
         prefs.loadPrefs(config.getString(strConfigRulesetPath));
     }
 
-    public void addSGML(MetsMods mm) throws IOException, UGHException {
+    public void addSGML(MetsMods mm, DocStruct currentVolume) throws IOException, UGHException {
 
         iCurrentPageNo = 1;
         this.mm = mm;
         this.dd = mm.getDigitalDocument();
         this.physical = dd.getPhysicalDocStruct();
         this.logical = dd.getLogicalDocStruct();
+        this.currentVolume = currentVolume;
         String strId = mm.getGoobiID();
         File sgml = new File(config.getString("sgmlPath") + strId + ".sgm");
 
@@ -133,9 +135,17 @@ public class SGMLParser {
                     DocStruct page = getAndSavePage(eltImg);
                     if (page != null) {
                         physical.addChild(page);
-                        logical.addReferenceTo(page, "logical_physical");
-                        dsEintrag.addReferenceTo(page, "logical_physical");
+                        if (currentVolume != null) {
+                            currentVolume.addReferenceTo(page, "logical_physical");
+                            dsEintrag.addReferenceTo(page, "logical_physical");
+                        } else {
+                            logical.addReferenceTo(page, "logical_physical");
+                            dsEintrag.addReferenceTo(page, "logical_physical");
+                        }
                     }
+
+                    //                        logical.addReferenceTo(page, "logical_physical");
+                    //                        dsEintrag.addReferenceTo(page, "logical_physical");
                 }
             }
         }
