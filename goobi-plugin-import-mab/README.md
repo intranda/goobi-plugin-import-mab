@@ -55,17 +55,17 @@ Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
     <!-- Collection name -->
     <singleDigCollection>Dissertationen</singleDigCollection>   
 
-        <!-- Mapping for MultiVolumeWork to child Volumes: -->
-        <mapMVW>/opt/digiverso/import/dissertationen/data/map.txt</mapMVW>
+    <!-- Mapping for MultiVolumeWork to child Volumes: -->
+    <mapMVW>/opt/digiverso/import/dissertationen/data/map.txt</mapMVW>
     
-        <!-- Mapping for child Volumes to parent MultiVolumeWork: -->
-        <mapChildren>/opt/digiverso/import/dissertationen/data/reverseMap.txt</mapChildren>
+    <!-- Mapping for child Volumes to parent MultiVolumeWork: -->
+    <mapChildren>/opt/digiverso/import/dissertationen/data/reverseMap.txt</mapChildren>
 
     <!-- For testing: stop the import after this many folders have been created. If 0, then import all.-->
     <importFirst>10</importFirst>
 
-        <!-- List of IDs to import. If empty, import all files -->
-        <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>
+    <!-- List of IDs to import. If empty, import all files -->
+    <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>
 
     <!-- For the import -->
     <basedir>/opt/digiverso/import/diss-mm/</basedir>
@@ -113,16 +113,38 @@ spezifiziert die MM Type der Dokument, falls es keine Kinder oder Eltern hat. Ei
 Das Element `"singleDigCollection"`
 spezifiziert die Metadatum singleDigCollection für die MM Dateien.
 
+Das Element `"mapMVW"`
+spezifiziert der Pfad zur JSON datei, in dem die MultiVolumeWork IDs gespeichert sind, zusammen mit jeweils eine Liste der IDs von alle Volumes die dazu gehören.
 
+Das Element `"mapChildren"`
+spezifiziert der Pfad zur JSON datei, das der gleiche Mapping anders rum speichert. Also zu jeder Volume ID, der an einer MVW gehört, wird der ID des Parents geordnet. 
 
+Zum testen: das Element `"importFirst"`
+spezifiziert wie viele Vorgänge angelegt werden sollen. Wenn das 0 ist, werden alle gemacht. 
+
+Das Element `"listIDs"`
+spezifiziert der Pfad zu einer Textdatei, in dem eine Liste IDs liegt. Wenn der Datei existiert, und nicht leer ist, werden NUR Vorgänge, die diesen IDs haben erzeugt. Das wird benutzt, um hinterher geänderte oder verbesserte Vorgänge neu zu importieren.
+
+Die restliche Einträge sind für die späteren Import benutzt.
 
 ## Arbeitsweise
 
 Die Arbeitsweise sieht folgendermaßen aus:
 
+### Vorbereitung:
+
+Die Mappings mapMVW und mapChildren werden erzeugt. Dafür wird der JAR gestartet, mit Pfad zur config-Datei als erster Parameter, und Pfad(e) zur MAB-Files die bearbeitet werden sollen als weitere Parameter. Damit werden die mapping files erzeugt und gespeichert. Das muss nur einmal geschehen, ausser es kommen neue MAB files dazu.
+
+### Import
+
 * Das Programm wird als JAR geöffnet, mit Pfad zur config-Datei als einziger Parameter.
-* Aus der config-Datei werden die Pfade zur mab2-Datei usw. ausgelesen, und der mad2-Datei wird durchlesen.
+* Aus der config-Datei werden die Pfade zur mab2-Datei usw. ausgelesen, und der mab2-Datei wird durchlesen.
 * Für jeder Dataset in der Datei wird ein MetsMods Document erzeugt, mit possenden Metadaten. Die Übersetzung der einzelnen Felder passiert mittels der tags Datei.
 * Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein gesucht, mit CatalogID als Name. Die MM Document ebkommt devon dann Struktur.
 * Für jedes Page in der Document wird nach Images gesucht, in der `"imagePathFile"` Ornder, in Unterordner mit CatalogID als Name. Dieser werden dann nach die Image Ordner kopiert, und Referenzen in der Structmap gemacht.
 * Danach kann mit der Goobi Folder Import die Prozesse importiert werden. 
+
+###Note
+
+Im Aktuellen Fall ist der MAB Datei zu gross für die Speicher am Kundenrechner. In diesem Fall habe ich die Datei in 2 geteilt, wobei im zweiten Teil nur Werke stehen, die nicht in die Mapping Dateien auftauchen, damit der Erzeugung von MVW und Volumes funktioniert. Dann kann das Programm 2 Mal aufgerufen werden, einmal für jeder MAB Datei. MVWs und Volumes werden nur korrekt zugeordnet, wenn beide Datensätze im gleichen MAB Datei liegen!
+

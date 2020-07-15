@@ -3,6 +3,7 @@ package de.intranda.goobi.plugins;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -21,20 +22,17 @@ public class App {
     }
 
     public static void main(String[] args)
-            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
+            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException, TransformerException {
 
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
         String strConfig = "/home/joel/git/rechtsgeschichte/testdiss4/diss-config4.xml";
-//        String strConfig = "";
+        //        String strConfig = "";
         if (args.length > 0) {
             strConfig = args[0];
         }
-        else {
-            
-        }
-        
+
         XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
         xmlConfig.setExpressionEngine(new XPathExpressionEngine());
         xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
@@ -42,14 +40,25 @@ public class App {
         SubnodeConfiguration myconfig = null;
         myconfig = xmlConfig.configurationAt("/config[./project = 'Project']");
 
-//        Boolean boWithSGML = myconfig.getBoolean("withSGML", false);
+        //        Boolean boWithSGML = myconfig.getBoolean("withSGML", false);
 
-//        if (boWithSGML) {
-//            MakeMetsModsOld maker = new MakeMetsModsOld(myconfig);
-//            maker.parse();
-//        } else {
+        //        if (boWithSGML) {
+        //            MakeMetsModsOld maker = new MakeMetsModsOld(myconfig);
+        //            maker.parse();
+        //        } else {
+
+        if (args.length > 1) {
+
+            MakeVolumeMap maker = new MakeVolumeMap(myconfig);
+            for (int i = 1; i < args.length; i++) {
+
+                maker.lstFilesVol.add(args[i]);
+            }
+
+            maker.parse();
+        } else {
             MakeMetsMods maker = new MakeMetsMods(myconfig);
             maker.parse();
-//        }
+        }
     }
 }

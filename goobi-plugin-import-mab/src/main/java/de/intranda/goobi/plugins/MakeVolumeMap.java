@@ -3,304 +3,332 @@ package de.intranda.goobi.plugins;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.io.FilenameUtils;
 import org.jdom2.JDOMException;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
 
 import ugh.exceptions.UGHException;
 
 public class MakeVolumeMap {
 
     //    private ArrayList<String> lstFilesMulti;
-    private ArrayList<String> lstFilesVol;
-    private ArrayList<String> lstIdsSaved;
+    public ArrayList<String> lstFilesVol;
+    private ArrayList<String> lstTops;
+    private ArrayList<String> lstChildren;
 
-    private String strMap = "/home/joel/git/rechtsgeschichte/map.xml";
+//    private String strMap = "/home/joel/git/rechtsgeschichte/map.xml";
+    private String strIds = "/home/joel/git/rechtsgeschichte/ids.txt";
+    public String mapFile = "/home/joel/git/rechtsgeschichte/map.txt";
+    public String reverseMapFile = "/home/joel/git/rechtsgeschichte/reverseMap.txt";
+    private HashMap<String, ArrayList<String>> map;
+    private HashMap<String, String> reverseMap;
 
-    private Document document;
-
-    private Element root;
-    private NodeList docNodes;
-    private int docNodeLength;
 
     public static void main(String[] args) throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException,
             JDOMException, TransformerException {
 
-        MakeVolumeMap maker = new MakeVolumeMap();
+        MakeVolumeMap maker = new MakeVolumeMap(null);
         //        maker.lstFilesMulti = new ArrayList<String>();
         //        maker.lstFilesMulti.add("/home/joel/git/rechtsgeschichte/final_data/mw_nicht_uw");
         //        maker.lstFilesMulti.add("/home/joel/git/rechtsgeschichte/final_data/stueck_nicht_uw");
         //        maker.lstFilesMulti.add("/home/joel/git/rechtsgeschichte/final_data/bd_nicht_uw");
 
+        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_stueck");
+        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_mw");
+        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_bd");
         maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/mw_nicht_uw");
         maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/stueck_nicht_uw");
         maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/bd_nicht_uw");
-        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/mono");
-        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_bd");
         maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_rest");
-        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_stueck");
-        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/uw_mw");
+        maker.lstFilesVol.add("/home/joel/git/rechtsgeschichte/final_data/mono");
 
         maker.parse();
 
     }
 
-    public MakeVolumeMap() {
+    public MakeVolumeMap(SubnodeConfiguration config) {
 
-        lstIdsSaved = new ArrayList<String>();
+        lstTops = new ArrayList<String>();
         lstFilesVol = new ArrayList<String>();
+        lstChildren = new ArrayList<String>();
+        map = new HashMap<String, ArrayList<String>>();
+        reverseMap = new HashMap<String, String>();
+        
+        if (config != null) {
+            
+            mapFile = config.getString("mapMVW");
+            reverseMapFile = config.getString("mapChildren");
+        }
+       
     }
 
     public void parse() throws IOException, JDOMException, ParserConfigurationException, TransformerException {
 
-        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+//        makeTextFile();
 
-        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        makeTree1();
 
-        this.document = documentBuilder.newDocument();
+        makeTree2();
 
-        // root element
-        this.root = document.createElement("map");
-        document.appendChild(root);
+        makeReverseMap();
 
-        //        //add a new top level doc:
-        //        Element doc = addTopLevelDoc("10", "sig10");
-        //
-        //        //add a child:
-        //        addChild(doc, "100");
-        //       addChild(doc, "200");
+        saveGson();
 
-        //get parents
-        fillMap(root, false);
-        saveXML();
-
-        //get children
-        fillMap(root, false);
-        saveXML();
-
-        //get grandchildren
-        fillMap(root, false);
-        saveXML();
-
-        System.out.println("Done creating XML File");
+        System.out.println("Done creating JSON File");
     }
 
-    private void saveXML()
-            throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException, FileNotFoundException {
-        //transform the DOM Object to an XML File
-        Transformer tr = TransformerFactory.newInstance().newTransformer();
-        tr.setOutputProperty(OutputKeys.INDENT, "yes");
-        tr.setOutputProperty(OutputKeys.METHOD, "xml");
-        tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
-        tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        DOMSource domSource = new DOMSource(document);
+    private void makeReverseMap() {
 
-        // send DOM to file
-        tr.transform(domSource, new StreamResult(new FileOutputStream(strMap)));
+        for (String parent : map.keySet()) {
+
+            for (String child : map.get(parent)) {
+
+                reverseMap.put(child, parent);
+            }
+        }
     }
 
-    private void fillMap(Element root, Boolean boTopLevel) throws IOException {
+    //fisrt, make sure all 0001s are parents
+    private void makeTree1() throws IOException {
 
         String strIdCurrent = "";
-        Boolean boSaved = false;
-        Boolean boTop = true;
+        String str1 = "";
+        String str4 = "";
 
-        for (String strFile : lstFilesVol) {
+        String text = ParsingUtils.readFileToString(new File(strIds));
 
-            System.out.println("Parsing " + strFile);
-            String text = ParsingUtils.readFileToString(new File(strFile));
+        BufferedReader reader = new BufferedReader(new StringReader(text));
+        String str = "";
 
-            if ((text != null) && (text.length() != 0)) {
+        while ((str = reader.readLine()) != null) {
 
-                BufferedReader reader = new BufferedReader(new StringReader(text));
-                String str = "";
+            str = str.trim();
 
-                while ((str = reader.readLine()) != null) {
+            if (str.length() < 4) {
+                continue;
+            }
 
-                    str = str.trim();
+            String tag = str.substring(0, 4);
 
-                    if (str.length() < 4) {
-                        continue;
-                    }
-
-                    String tag = str.substring(0, 4);
-
-                    try {
-                        //get current id
-                        if (tag.equals("0000")) {
-                            boSaved = false;
-                            boTop = true;
-                            int iValue = str.indexOf(":");
-                            strIdCurrent = str.substring(iValue + 1, str.length()).trim();
-
-                            if (lstIdsSaved.contains(strIdCurrent)) {
-                                boSaved = true;
-                            }
-                        }
-
-                        if (!boSaved && tag.equals("0001")) {
-                            boTop = false;
-                            int iValue = str.indexOf(":");
-                            String idVerweisSSW = str.substring(iValue + 1, str.length()).trim();
-
-                            Element eltParent = findParent(idVerweisSSW);
-                            if (eltParent != null) {
-                                addChild(eltParent, strIdCurrent);
-                                lstIdsSaved.add(strIdCurrent);
-                                boSaved = true;
-                            }
-                        }
-
-                        if (!boSaved && tag.equals("0004")) {
-                            boTop = false;
-                            int iValue = str.indexOf(":");
-                            String idVerweisSSW = str.substring(iValue + 1, str.length()).trim();
-
-                            Element eltParent = findParent(idVerweisSSW);
-                            if (eltParent != null) {
-                                addChild(eltParent, strIdCurrent);
-                                lstIdsSaved.add(strIdCurrent);
-                                boSaved = true;
-                            }
-                        }
-
-                        if (!boSaved && boTop && tag.equals("9999")) {
-                            addTopLevelDoc(strIdCurrent);
-                            lstIdsSaved.add(strIdCurrent);
-                            boSaved = true;
-                            this.docNodes = root.getChildNodes();
-                            this.docNodeLength = docNodes.getLength();
-                        }
-
-                        //                        if (tag.equals("0014")) {
-                        //                            // Data field
-                        //                            int iValue = str.indexOf(":");
-                        //                            String content = str.substring(iValue + 1, str.length()).trim();
-                        //
-                        //                            if (!boTopLevel) {
-                        //
-                        //                                int iBracket = content.indexOf("[");
-                        //                                if (iBracket != -1 || content.startsWith("in") || content.startsWith("an")) {
-                        //
-                        //                                    //find the corresp. top level doc:
-                        //                                    Element eltParent = findParent(strIdCurrent);
-                        //                                    if (eltParent != null) {
-                        //                                        addChild(eltParent, strIdCurrent);
-                        //                                    }
-                        //                                }
-                        //                            } else if (boTopLevel && (!content.startsWith("in") && !content.startsWith("an"))) {
-                        //
-                        //                                String strSig = content;
-                        //                                int iBracket = strSig.indexOf("[");
-                        //                                if (iBracket != -1) {
-                        //                                    continue;
-                        //                                }
-                        //                                
-                        //
-                        //                                int iValue2 = strSig.indexOf(":");
-                        //                                if (iValue2 != -1) {
-                        //                                    strSig = strSig.substring(iValue + 1, strSig.length()).trim();
-                        //                                }
-                        //
-                        //                                addTopLevelDoc(strIdCurrent, strSig);
-                        //
-                        //                            }
-                        //
-                        //                        }
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        System.out.println(e.getMessage());
-                    }
+            try {
+                //get current id
+                if (tag.equals("0000")) {
+                    int iValue = str.indexOf(":");
+                    strIdCurrent = str.substring(iValue + 1, str.length()).trim();
                 }
 
+                if (tag.equals("0001")) {
+                    int iValue = str.indexOf(":");
+                    str1 = str.substring(iValue + 1, str.length()).trim();
+                }
+
+                if (tag.equals("0004")) {
+                    int iValue = str.indexOf(":");
+                    str4 = str.substring(iValue + 1, str.length()).trim();
+                }
+
+                if (tag.equals("9999")) {
+
+                    if (!str1.isEmpty() && !map.keySet().contains(str1)) {
+                        map.put(str1, new ArrayList<String>());
+                    }
+
+                    if (!str1.isEmpty() && map.keySet().contains(str1)) {
+                        ArrayList<String> lstSub = map.get(str1);
+                        if (!lstSub.contains(strIdCurrent)) {
+                            lstSub.add(strIdCurrent);
+                            lstChildren.add(strIdCurrent);
+
+                            map.put(str1, lstSub);
+                        }
+
+                        if (!str4.isEmpty() && !lstSub.contains(str4)) {
+                            lstSub.add(str4);
+                            lstChildren.add(str4);
+
+                            map.put(str1, lstSub);
+                        }
+                    }
+
+                    strIdCurrent = "";
+                    str1 = "";
+                    str4 = "";
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    private Element findParent(String strId) {
+    //Now all 0001s are parents; add any 0004s not children
+    private void makeTree2() throws IOException {
 
-        //        int iValue = content.lastIndexOf(":");
-        //        String ref = content.substring(iValue + 1, content.length()).trim();
+        String strIdCurrent = "";
+        String str1 = "";
+        String str4 = "";
 
-        if (strId.startsWith("000")) {
-            strId = strId.replaceFirst("000", "");
+        String text = ParsingUtils.readFileToString(new File(strIds));
+
+        BufferedReader reader = new BufferedReader(new StringReader(text));
+        String str = "";
+
+        while ((str = reader.readLine()) != null) {
+
+            str = str.trim();
+
+            if (str.length() < 4) {
+                continue;
+            }
+
+            String tag = str.substring(0, 4);
+
+            try {
+                //get current id
+                if (tag.equals("0000")) {
+                    int iValue = str.indexOf(":");
+                    strIdCurrent = str.substring(iValue + 1, str.length()).trim();
+                }
+
+                if (tag.equals("0001")) {
+                    int iValue = str.indexOf(":");
+                    str1 = str.substring(iValue + 1, str.length()).trim();
+                }
+
+                if (tag.equals("0004")) {
+                    int iValue = str.indexOf(":");
+                    str4 = str.substring(iValue + 1, str.length()).trim();
+                }
+
+                if (tag.equals("9999")) {
+
+                    if (!str4.isEmpty() && !map.keySet().contains(str4) && !lstChildren.contains(str4)) {
+                        map.put(str4, new ArrayList<String>());
+                    }
+
+                    if (!str4.isEmpty() && map.keySet().contains(str4) && !lstChildren.contains(strIdCurrent)) {
+                        ArrayList<String> lstSub = map.get(str4);
+                        if (!lstSub.contains(strIdCurrent)) {
+                            lstSub.add(strIdCurrent);
+                            lstChildren.add(strIdCurrent);
+
+                            map.put(str4, lstSub);
+                        }
+                    }
+
+                    strIdCurrent = "";
+                    str1 = "";
+                    str4 = "";
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void makeTextFile() throws IOException {
+
+        String strIdCurrent = "";
+
+        try (PrintWriter out = new PrintWriter(strIds)) {
+
+            for (String strFile : lstFilesVol) {
+
+                out.println();
+                out.println("##########################################################");
+                out.println(FilenameUtils.getName(strFile));
+                out.println();
+
+                System.out.println("Parsing " + strFile);
+                String text = ParsingUtils.readFileToString(new File(strFile));
+
+                if ((text != null) && (text.length() != 0)) {
+
+                    BufferedReader reader = new BufferedReader(new StringReader(text));
+                    String str = "";
+
+                    while ((str = reader.readLine()) != null) {
+
+                        str = str.trim();
+
+                        if (str.length() < 4) {
+                            continue;
+                        }
+
+                        String tag = str.substring(0, 4);
+
+                        try {
+                            //get current id
+                            if (tag.equals("0000")) {
+                                int iValue = str.indexOf(":");
+                                strIdCurrent = str.substring(iValue + 1, str.length()).trim();
+
+                                out.println(tag + ":" + strIdCurrent);
+                            }
+
+                            if (tag.equals("0001")) {
+                                int iValue = str.indexOf(":");
+                                String idVerweisSSW = str.substring(iValue + 1, str.length()).trim();
+                                if (idVerweisSSW.startsWith("000")) {
+                                    idVerweisSSW = idVerweisSSW.replaceFirst("000", "");
+                                }
+
+                                out.println(tag + ":" + idVerweisSSW);
+                                lstTops.add(idVerweisSSW);
+                            }
+
+                            if (tag.equals("0004")) {
+                                int iValue = str.indexOf(":");
+                                String idVerweisSSW = str.substring(iValue + 1, str.length()).trim();
+
+                                out.println(tag + ":" + idVerweisSSW);
+                            }
+
+                            if (tag.equals("9999")) {
+                                out.println("9999");
+                                out.println();
+                            }
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                            System.out.println(e.getMessage());
+                        }
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private void saveGson() throws FileNotFoundException {
+        Gson gson = new Gson();
+        String str = gson.toJson(map);
+
+        try (PrintWriter out = new PrintWriter(mapFile)) {
+            out.println(str);
         }
         
-        if ( !lstIdsSaved.contains(strId) ||docNodes == null) {
-            return null;
+        String str2 = gson.toJson(reverseMap);
+
+        try (PrintWriter out = new PrintWriter(reverseMapFile)) {
+            out.println(str2);
         }
-
-        for (int i = 0; i < docNodeLength; i++) {
-            Node node = docNodes.item(i);
-            String strContent = node.getTextContent();
-            if (strId.equals(strContent)) {
-                return (Element) node;
-            }
-
-            if (node.hasChildNodes()) {
-                NodeList childNodes = node.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    Node nodeChild = childNodes.item(j);
-                    if (nodeChild.getNodeType() != Node.ELEMENT_NODE) {
-                        continue;
-                    }
-                    String strContent1 = nodeChild.getTextContent();
-                    if (strId.equals(strContent1)) {
-                        return (Element) nodeChild;
-                    }
-                }
-            }
-        }
-
-        //otherwise
-        return null;
-    }
-
-    private Element addTopLevelDoc(String strId) {
-        Element doc = document.createElement("doc");
-        doc.appendChild(document.createTextNode(strId));
-        root.appendChild(doc);
-
-        //        Attr attrId = document.createAttribute("id");
-        //        attrId.setValue(strId);
-        //        doc.setAttributeNode(attrId);
-
-        return doc;
-    }
-
-    private void addChild(Element doc, String strId) {
-        Element child = document.createElement("child");
-        child.appendChild(document.createTextNode(strId));
-        doc.appendChild(child);
-
-        //        Attr attrIdChild = document.createAttribute("id");
-        //        attrIdChild.setValue(strId);
-        //        child.setAttributeNode(attrIdChild);
-        //
-        //        doc.appendChild(child);
     }
 
 }
