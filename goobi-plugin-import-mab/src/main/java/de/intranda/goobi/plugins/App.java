@@ -27,11 +27,15 @@ public class App {
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
-        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss4/diss-config4.xml";
+        String strConfig = "/home/joel/git/rechtsgeschichte/testpriv/priv-config-test.xml";
         //        String strConfig = "";
         if (args.length > 0) {
             strConfig = args[0];
         }
+        
+//        args = new String[2];
+//        args[0] = strConfig;
+//        args[1] = "/home/joel/git/rechtsgeschichte/privrecht/priv-all-txt";
 
         XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
         xmlConfig.setExpressionEngine(new XPathExpressionEngine());

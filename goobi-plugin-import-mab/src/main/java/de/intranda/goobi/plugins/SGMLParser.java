@@ -43,6 +43,8 @@ public class SGMLParser {
     private DocStruct physical;
     private DocStruct logical;
     private DocStruct currentVolume;
+    
+    private String strCurrentId;
 
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
 
@@ -53,7 +55,7 @@ public class SGMLParser {
         prefs.loadPrefs(config.getString(strConfigRulesetPath));
     }
 
-    public void addSGML(MetsMods mm, DocStruct currentVolume) throws IOException, UGHException {
+    public void addSGML(MetsMods mm, DocStruct currentVolume, String strId) throws IOException, UGHException {
 
         iCurrentPageNo = 1;
         this.mm = mm;
@@ -61,7 +63,9 @@ public class SGMLParser {
         this.physical = dd.getPhysicalDocStruct();
         this.logical = dd.getLogicalDocStruct();
         this.currentVolume = currentVolume;
-        String strId = mm.getGoobiID();
+//        String strId = mm.getGoobiID();
+        this.strCurrentId = strId;
+        
         File sgml = new File(config.getString("sgmlPath") + strId + ".sgm");
 
         if (sgml.exists()) {
@@ -249,7 +253,7 @@ public class SGMLParser {
     private DocStruct getAndSavePage(Element elt1) throws UGHException, IOException {
 
         //create subfolder for images, as necessary:
-        String strImageFolder = strOutputPath + mm.getGoobiID() + "/images/";
+        String strImageFolder = strOutputPath + this.strCurrentId + "/images/";
         new File(strImageFolder).mkdirs();
 
         //find the file: it has 8 digits.
@@ -260,15 +264,15 @@ public class SGMLParser {
             strFile = "0" + strFile;
         }
 
-        String strFilePath = strImagePath + mm.getGoobiID() + "/" + strFile;
+        String strFilePath = strImagePath + this.strCurrentId + "/" + strFile;
 
         File fileCopy = null;
 
         //copy original file:
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix + mm.getGoobiID() + strMediaSuffix + File.separator;
-        String strNormalPath = strImageFolder + mm.getGoobiID() + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix +this.strCurrentId  + strMediaSuffix + File.separator;
+        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
         new File(strNormalPath).mkdirs();

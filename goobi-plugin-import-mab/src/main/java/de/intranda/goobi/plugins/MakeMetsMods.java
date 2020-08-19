@@ -197,7 +197,7 @@ public class MakeMetsMods {
                 if (str.length() == 0 && boMVW) {
 
                     if (boWithSGML) {
-                        sgmlParser.addSGML(mm, currentVolume);
+                        sgmlParser.addSGML(mm, currentVolume, strCurrentId);
                     }
 
                     mapMVWs.put(strCurrentId, mm);
@@ -312,7 +312,7 @@ public class MakeMetsMods {
                 if (str.length() == 0 && !boMVW) {
 
                     if (boWithSGML) {
-                        sgmlParser.addSGML(mm, currentVolume);
+                        sgmlParser.addSGML(mm, currentVolume, strCurrentId);
                     }
 
                     Boolean boSave = true;
