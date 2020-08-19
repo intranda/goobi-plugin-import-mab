@@ -48,6 +48,8 @@ import ugh.fileformats.mets.MetsMods;
 
 public class MakeMetsMods {
 
+    Boolean boVerbose = false;
+
     //these are the xml config fields:
     private String strRulesetPath = "rulesetPath";
     private String strOutputPath = "outputPath";
@@ -159,13 +161,33 @@ public class MakeMetsMods {
 
     public void parse() throws IOException, UGHException, JDOMException {
 
+        if (boVerbose) {
+            System.out.println("1");
+        }
+
         readTagsList();
+
+        if (boVerbose) {
+            System.out.println("2");
+        }
 
         readIdsList();
 
+        if (boVerbose) {
+            System.out.println("3");
+        }
+
         readJson();
 
+        if (boVerbose) {
+            System.out.println("4");
+        }
+
         collectMultiVolumeWorks();
+
+        if (boVerbose) {
+            System.out.println("5");
+        }
 
         saveMMs();
     }
@@ -189,6 +211,8 @@ public class MakeMetsMods {
 
             Boolean boMVW = false;
             String strCurrentId = "";
+
+            int iLine = 0;
 
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
@@ -225,8 +249,12 @@ public class MakeMetsMods {
                         String content = str.substring(iValue + 1, str.length());
 
                         //Check for parent:
-                        if (tag.contentEquals("0000")) {
+                        if (map != null && tag.contentEquals("0000")) {
                             boMVW = map.containsKey(content);
+
+                            if (boVerbose) {
+                                System.out.println("Id: " + content);
+                            }
                         }
 
                         //only carry on for parents
@@ -246,6 +274,7 @@ public class MakeMetsMods {
                         //                        }
                         //                        
                         Metadata md = metaMaker.getMetadata(mapTags.get(tag), content);
+
                         if (md != null) {
 
                             //already have title? then include as OtherTitle
@@ -272,8 +301,11 @@ public class MakeMetsMods {
                     }
                 } catch (Exception e) {
                     // TODO: handle exception
+                    System.out.println("Problem with " + strCurrentId + " at line " + iLine);
                     System.out.println(e.getMessage());
                 }
+
+                iLine++;
             }
 
         }
@@ -305,11 +337,13 @@ public class MakeMetsMods {
             Boolean boChild = false;
             String strCurrentId = "";
 
+            int iLine = 0;
+
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
 
                 //finished one ?
-                if (str.length() == 0 && !boMVW) {
+                if (strCurrentPath != null && str.length() == 0 && !boMVW) {
 
                     if (boWithSGML) {
                         sgmlParser.addSGML(mm, currentVolume, strCurrentId);
@@ -321,12 +355,15 @@ public class MakeMetsMods {
                     }
 
                     if (boSave) {
+                        
+                        System.out.println("Save " + strCurrentId + " line " + iLine);
                         saveMM(mm, strCurrentPath);
                     }
-                    
+
                     //stop the import? 
                     iImported++;
                     if (iStopImportAfter != 0 && iImported >= iStopImportAfter) {
+                        System.out.println("Imported first" + iStopImportAfter);
                         break;
                     }
                 }
@@ -346,8 +383,9 @@ public class MakeMetsMods {
 
                         //Check for parent:
                         if (tag.contentEquals("0000")) {
-                            boMVW = map.containsKey(content);
-                            boChild = mapRev.containsKey(content);
+
+                            boMVW = (map != null) && map.containsKey(content);
+                            boChild = (mapRev != null) && mapRev.containsKey(content);
 
                             if (!boChild) {
                                 currentVolume = null;
@@ -360,6 +398,11 @@ public class MakeMetsMods {
 
                             strCurrentId = content;
                             strCurrentPath = strFolder + strCurrentId + "/";
+
+                            if (boVerbose) {
+                                System.out.println("Current path: " + strCurrentPath);
+                            }
+
                             new File(strCurrentPath).mkdir();
 
                             //start new MM:
@@ -421,6 +464,7 @@ public class MakeMetsMods {
                         }
 
                         Metadata md = metaMaker.getMetadata(mapTags.get(tag), content);
+
                         if (md != null) {
 
                             //already have title? then include as OtherTitle
@@ -452,8 +496,11 @@ public class MakeMetsMods {
                         }
 
                     }
+
+                    iLine++;
                 } catch (Exception e) {
                     // TODO: handle exception
+                    System.out.println("Problem with " + strCurrentId + " at line " + iLine);
                     System.out.println(e.getMessage());
                 }
             }

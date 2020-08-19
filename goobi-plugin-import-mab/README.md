@@ -142,6 +142,7 @@ Die Mappings mapMVW und mapChildren werden erzeugt. Dafür wird der JAR gestarte
 * Für jeder Dataset in der Datei wird ein MetsMods Document erzeugt, mit possenden Metadaten. Die Übersetzung der einzelnen Felder passiert mittels der tags Datei.
 * Wenn `"withSGML"` `true` ist, dann wird in der Ornder `"sgmlPath"` nach SGMl-Datein gesucht, mit CatalogID als Name. Die MM Document ebkommt devon dann Struktur.
 * Für jedes Page in der Document wird nach Images gesucht, in der `"imagePathFile"` Ornder, in Unterordner mit CatalogID als Name. Dieser werden dann nach die Image Ordner kopiert, und Referenzen in der Structmap gemacht.
+* BEMERKUNG: Aktuell werden die Bilder NICHT mit der korrekten Permissions kopiert. Das bedeutet, vor dem Import in Goobi mussen alle erzeugten Ordner und Dateien den Besitzer tomcat8 gegeben werden, mittels `sudo chown -R tomcat8 *` !
 * Danach kann mit der Goobi Folder Import die Prozesse importiert werden. 
 
 ###Note

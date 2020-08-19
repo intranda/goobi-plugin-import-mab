@@ -272,10 +272,10 @@ public class SGMLParser {
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
         String strMasterPath = strImageFolder + strMasterPrefix +this.strCurrentId  + strMediaSuffix + File.separator;
-        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
+//        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
-        new File(strNormalPath).mkdirs();
+//        new File(strNormalPath).mkdirs();
 
         Path pathSource = Paths.get(strFilePath);
         Path pathDest = Paths.get(strMasterPath + strFile);
@@ -288,8 +288,8 @@ public class SGMLParser {
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
 
-        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
-        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
+//        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+//        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 
         fileCopy = new File(pathDest.toString());
 
