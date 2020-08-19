@@ -33,9 +33,9 @@ public class App {
             strConfig = args[0];
         }
         
-//        args = new String[2];
-//        args[0] = strConfig;
-//        args[1] = "/home/joel/git/rechtsgeschichte/privrecht/priv-all-txt";
+        args = new String[2];
+        args[0] = strConfig;
+        args[1] = "/home/joel/git/rechtsgeschichte/privrecht/priv-all-txt";
 
         XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
         xmlConfig.setExpressionEngine(new XPathExpressionEngine());
