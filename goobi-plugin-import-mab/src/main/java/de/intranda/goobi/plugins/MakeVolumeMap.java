@@ -70,6 +70,8 @@ public class MakeVolumeMap {
             
             mapFile = config.getString("mapMVW");
             reverseMapFile = config.getString("mapChildren");
+            
+            strIds = mapFile + "_Ids.txt";
         }
        
     }
