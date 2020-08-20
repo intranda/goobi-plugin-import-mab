@@ -28,13 +28,12 @@ public class MakeVolumeMap {
     private ArrayList<String> lstTops;
     private ArrayList<String> lstChildren;
 
-//    private String strMap = "/home/joel/git/rechtsgeschichte/map.xml";
+    //    private String strMap = "/home/joel/git/rechtsgeschichte/map.xml";
     private String strIds = "/home/joel/git/rechtsgeschichte/ids.txt";
     public String mapFile = "/home/joel/git/rechtsgeschichte/map.txt";
     public String reverseMapFile = "/home/joel/git/rechtsgeschichte/reverseMap.txt";
     private HashMap<String, ArrayList<String>> map;
     private HashMap<String, String> reverseMap;
-
 
     public static void main(String[] args) throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException,
             JDOMException, TransformerException {
@@ -65,20 +64,20 @@ public class MakeVolumeMap {
         lstChildren = new ArrayList<String>();
         map = new HashMap<String, ArrayList<String>>();
         reverseMap = new HashMap<String, String>();
-        
+
         if (config != null) {
-            
+
             mapFile = config.getString("mapMVW");
             reverseMapFile = config.getString("mapChildren");
-            
+
             strIds = config.getString("mabFile");
         }
-       
+
     }
 
     public void parse() throws IOException, JDOMException, ParserConfigurationException, TransformerException {
 
-//        makeTextFile();
+        //        makeTextFile();
 
         makeTree1();
 
@@ -138,7 +137,13 @@ public class MakeVolumeMap {
 
                 if (tag.equals("0004")) {
                     int iValue = str.indexOf(":");
-                    str4 = str.substring(iValue + 1, str.length()).trim();
+
+                    //if no 1, use 4 instead:
+                    if (str1.contentEquals("")) {
+                        str1 = str.substring(iValue + 1, str.length()).trim();
+                    } else {
+                        str4 = str.substring(iValue + 1, str.length()).trim();
+                    }
                 }
 
                 if (tag.equals("9999")) {
@@ -325,7 +330,7 @@ public class MakeVolumeMap {
         try (PrintWriter out = new PrintWriter(mapFile)) {
             out.println(str);
         }
-        
+
         String str2 = gson.toJson(reverseMap);
 
         try (PrintWriter out = new PrintWriter(reverseMapFile)) {

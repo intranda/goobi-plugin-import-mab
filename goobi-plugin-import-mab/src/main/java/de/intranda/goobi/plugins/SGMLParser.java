@@ -43,7 +43,7 @@ public class SGMLParser {
     private DocStruct physical;
     private DocStruct logical;
     private DocStruct currentVolume;
-    
+
     private String strCurrentId;
 
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
@@ -63,9 +63,10 @@ public class SGMLParser {
         this.physical = dd.getPhysicalDocStruct();
         this.logical = dd.getLogicalDocStruct();
         this.currentVolume = currentVolume;
-//        String strId = mm.getGoobiID();
+
+        //        String strId = mm.getGoobiID();
         this.strCurrentId = strId;
-        
+
         File sgml = new File(config.getString("sgmlPath") + strId + ".sgm");
 
         if (sgml.exists()) {
@@ -107,7 +108,11 @@ public class SGMLParser {
 
                 if (elt2.tagName().equalsIgnoreCase("div")) {
                     DocStruct dsEintrag = addDiv(elt2);
-                    logical.addChild(dsEintrag);
+                    if (currentVolume != null) {
+                        currentVolume.addChild(dsEintrag);
+                    } else {
+                        logical.addChild(dsEintrag);
+                    }
                 }
 
             }
@@ -159,6 +164,11 @@ public class SGMLParser {
 
     private void addHeader(Element eltHeader) throws MetadataTypeNotAllowedException {
 
+        DocStruct docStruct = logical;
+        if (currentVolume != null) {
+            docStruct = currentVolume;
+        }
+
         for (Element elt : eltHeader.getAllElements()) {
 
             String strName = elt.tagName();
@@ -168,20 +178,25 @@ public class SGMLParser {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("TitleDocMain");
                     Metadata mdTitle = new Metadata(typeTitle);
 
-                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
-                        mdTitle.setValue(eltTitle.text());
-                        logical.addMetadata(mdTitle);
+                    if (docStruct.getAllMetadataByType(typeTitle).size() != 0) {
+                        typeTitle = prefs.getMetadataTypeByName("TitleDocSub1");
+                        mdTitle = new Metadata(typeTitle);
                     }
+
+                    mdTitle.setValue(eltTitle.text());
+                    docStruct.addMetadata(mdTitle);
                 }
 
                 for (Element eltTitle : elt.getElementsByTag("author")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
                     Metadata mdTitle = new Metadata(typeTitle);
 
-                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
-                        mdTitle.setValue(eltTitle.text());
-                        logical.addMetadata(mdTitle);
-                    }
+                    //                        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
+                    mdTitle.setValue(eltTitle.text());
+
+                    docStruct.addMetadata(mdTitle);
+                    //                        }
+
                 }
             }
 
@@ -190,21 +205,16 @@ public class SGMLParser {
                 for (Element eltTitle : elt.getElementsByTag("pubplace")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PlaceOfPublication");
                     Metadata mdTitle = new Metadata(typeTitle);
-
-                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
-                        mdTitle.setValue(eltTitle.text());
-                        logical.addMetadata(mdTitle);
-                    }
+                    mdTitle.setValue(eltTitle.text());
+                    docStruct.addMetadata(mdTitle);
                 }
 
                 for (Element eltTitle : elt.getElementsByTag("date")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PublicationYear");
                     Metadata mdTitle = new Metadata(typeTitle);
+                    mdTitle.setValue(eltTitle.text());
 
-                    if (logical.getAllMetadataByType(typeTitle).size() == 0) {
-                        mdTitle.setValue(eltTitle.text());
-                        logical.addMetadata(mdTitle);
-                    }
+                    docStruct.addMetadata(mdTitle);
                 }
             }
 
@@ -271,11 +281,11 @@ public class SGMLParser {
         //copy original file:
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix +this.strCurrentId  + strMediaSuffix + File.separator;
-//        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix + this.strCurrentId + strMediaSuffix + File.separator;
+        //        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
-//        new File(strNormalPath).mkdirs();
+        //        new File(strNormalPath).mkdirs();
 
         Path pathSource = Paths.get(strFilePath);
         Path pathDest = Paths.get(strMasterPath + strFile);
@@ -288,8 +298,8 @@ public class SGMLParser {
 
         Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
 
-//        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
-//        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
+        //        Path pathDest2 = Paths.get(strNormalPath + pathSource.getFileName());
+        //        Files.copy(pathSource, pathDest2, StandardCopyOption.REPLACE_EXISTING);
 
         fileCopy = new File(pathDest.toString());
 
