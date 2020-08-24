@@ -71,7 +71,7 @@ public class MakeMetsMods {
     private Prefs prefs;
     private HashMap<String, String> mapTags;
     private SubnodeConfiguration config;
-    private ArrayList<MetsMods> lstMM;
+//    private ArrayList<MetsMods> lstMM;
 
     private int iStopImportAfter = 0;
 
@@ -129,7 +129,7 @@ public class MakeMetsMods {
 
         this.mapMVWs = new HashMap<String, MetsMods>();
         this.config = config;
-        lstMM = new ArrayList<MetsMods>();
+//        lstMM = new ArrayList<MetsMods>();
         this.prefs = new Prefs();
         prefs.loadPrefs(config.getString(strRulesetPath));
         lstIds = new ArrayList<String>();
@@ -819,7 +819,7 @@ public class MakeMetsMods {
 
     private void saveMM(MetsMods mmNew, String strFolderForMM) throws UGHException {
 
-        lstMM.add(mmNew);
+//        lstMM.add(mmNew);
         String strFolder = strFolderForMM;
 
         if (!strFolder.endsWith("/")) {
