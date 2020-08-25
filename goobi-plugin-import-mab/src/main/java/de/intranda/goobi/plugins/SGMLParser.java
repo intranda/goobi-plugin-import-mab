@@ -94,7 +94,12 @@ public class SGMLParser {
 
     public void parse(Element elt) throws UGHException, IOException {
 
+        Boolean boWithEbind = false;
+
+        //For Diss, look like this:
         for (Element elt1 : elt.getElementsByTag("ebind")) {
+            boWithEbind = true;
+
             for (Element eltHeader : elt1.getElementsByTag("ebindheader")) {
                 for (Element eltDesc : eltHeader.getElementsByTag("filedesc")) {
 
@@ -118,6 +123,26 @@ public class SGMLParser {
             }
 
         }
+
+        //for Privatrecht, looks like this:
+        if (!boWithEbind) {
+            for (Element elt1 : elt.getElementsByTag("body")) {
+                Elements elts = elt1.children();
+                for (Element elt2 : elts) {
+
+                    if (elt2.tagName().equalsIgnoreCase("div")) {
+                        DocStruct dsEintrag = addDiv(elt2);
+                        if (currentVolume != null) {
+                            currentVolume.addChild(dsEintrag);
+                        } else {
+                            logical.addChild(dsEintrag);
+                        }
+                    }
+
+                }
+            }
+        }
+
     }
 
     private DocStruct addDiv(Element elt2) throws UGHException, IOException {

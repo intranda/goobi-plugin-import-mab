@@ -10,14 +10,14 @@ Das Programm untersucht die hinterlegte MAB2-Datei, und übersetzt die Felder Me
 Das Programm besteht aus drei Dateien:
 
 ```bash
-plugin_intranda_opac_mab.jar
-plugin_intranda_opac_mab.xml
+goobi-plugin-import-mab.jar
+goobi-plugin-import-mab.xml
 tags.txt
 ```
 
-Die Datei `"plugin_intranda_opac_mab.jar"` enthält die Programmlogik und ist ein ausführbares Datei.
+Die Datei `"goobi-plugin-import-mab.jar"` enthält die Programmlogik und ist ein ausführbares Datei.
 
-Die Datei ```plugin_intranda_opac_mab.xml``` ist das Config-Datei.
+Die Datei ```goobi-plugin-import-mab.xml``` ist das Config-Datei.
 
 
 Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
