@@ -212,17 +212,17 @@ public class SGMLParser {
                     docStruct.addMetadata(mdTitle);
                 }
 
-                for (Element eltTitle : elt.getElementsByTag("author")) {
-                    MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
-                    Metadata mdTitle = new Metadata(typeTitle);
-
-                    //                        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
-                    mdTitle.setValue(eltTitle.text());
-
-                    docStruct.addMetadata(mdTitle);
-                    //                        }
-
-                }
+//                for (Element eltTitle : elt.getElementsByTag("author")) {
+//                    MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
+//                    Metadata mdTitle = new Metadata(typeTitle);
+//
+//                    //                        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
+//                    mdTitle.setValue(eltTitle.text());
+//
+//                    docStruct.addMetadata(mdTitle);
+//                    //                        }
+//
+//                }
             }
 
             if (strName.equalsIgnoreCase("publicationstmt")) {

@@ -356,7 +356,7 @@ public class MakeMetsMods {
 
                     if (boSave) {
                         
-                        System.out.println("Save " + strCurrentId + " line " + iLine);
+                        System.out.println("Save " + strCurrentId + " line " + iLine + "at " + strCurrentPath);
                         saveMM(mm, strCurrentPath);
                     }
 
