@@ -45,6 +45,7 @@ public class SGMLParser {
     private DocStruct currentVolume;
 
     private String strCurrentId;
+    public Boolean boVerbose;
 
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
 
@@ -56,6 +57,10 @@ public class SGMLParser {
     }
 
     public void addSGML(MetsMods mm, DocStruct currentVolume, String strId) throws IOException, UGHException {
+
+        if (boVerbose) {
+            System.out.println("Add SGML " + strId);
+        }
 
         iCurrentPageNo = 1;
         this.mm = mm;
@@ -71,6 +76,8 @@ public class SGMLParser {
 
         if (sgml.exists()) {
             parse(sgml);
+        } else if (boVerbose) {
+            System.out.println("No SGML for " + strId);
         }
     }
 
@@ -212,17 +219,17 @@ public class SGMLParser {
                     docStruct.addMetadata(mdTitle);
                 }
 
-//                for (Element eltTitle : elt.getElementsByTag("author")) {
-//                    MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
-//                    Metadata mdTitle = new Metadata(typeTitle);
-//
-//                    //                        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
-//                    mdTitle.setValue(eltTitle.text());
-//
-//                    docStruct.addMetadata(mdTitle);
-//                    //                        }
-//
-//                }
+                //                for (Element eltTitle : elt.getElementsByTag("author")) {
+                //                    MetadataType typeTitle = prefs.getMetadataTypeByName("Author");
+                //                    Metadata mdTitle = new Metadata(typeTitle);
+                //
+                //                    //                        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
+                //                    mdTitle.setValue(eltTitle.text());
+                //
+                //                    docStruct.addMetadata(mdTitle);
+                //                    //                        }
+                //
+                //                }
             }
 
             if (strName.equalsIgnoreCase("publicationstmt")) {

@@ -53,10 +53,16 @@ public class App {
         //            maker.parse();
         //        } else {
 
-        if (args.length > 1) {
+        if (args.length == 2 && args[1].contentEquals("verbose")) {
+            MakeMetsMods maker = new MakeMetsMods(myconfig);
+            maker.boVerbose = true;
+            maker.parse();
+            
+        }      
+        else if (args.length > 1) {
 
             MakeVolumeMap maker = new MakeVolumeMap(myconfig);
-            for (int i = 1; i < args.length; i++) {
+            for (int i = 2; i < args.length; i++) {
 
                 maker.lstFilesVol.add(args[i]);
             }
@@ -64,6 +70,10 @@ public class App {
             maker.parse();
         } else {
             MakeMetsMods maker = new MakeMetsMods(myconfig);
+            
+            if (args.length == 0) {
+                maker.boVerbose = true;
+            }
             maker.parse();
         }
     }

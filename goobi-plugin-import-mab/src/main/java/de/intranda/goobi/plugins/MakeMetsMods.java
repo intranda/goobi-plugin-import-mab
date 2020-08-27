@@ -141,6 +141,7 @@ public class MakeMetsMods {
         boWithSGML = config.getBoolean("withSGML");
         if (boWithSGML) {
             sgmlParser = new SGMLParser(config);
+            sgmlParser.boVerbose = boVerbose;
         }
 
         metaMaker = new MetadataMaker(prefs);
@@ -351,12 +352,13 @@ public class MakeMetsMods {
 
                     Boolean boSave = true;
                     if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
+                        System.out.println("Not saving " + strCurrentId);
                         boSave = false;
                     }
 
                     if (boSave) {
                         
-                        System.out.println("Save " + strCurrentId + " line " + iLine + "at " + strCurrentPath);
+                        System.out.println("Save " + strCurrentId + " line " + iLine );
                         saveMM(mm, strCurrentPath);
                     }
 
@@ -385,6 +387,11 @@ public class MakeMetsMods {
                         if (tag.contentEquals("0000")) {
 
                             boMVW = (map != null) && map.containsKey(content);
+                            
+                            if (boVerbose && boMVW) {
+                                System.out.println("Elt is parent: " + content);
+                            }
+                            
                             boChild = (mapRev != null) && mapRev.containsKey(content);
 
                             if (!boChild) {
@@ -820,6 +827,10 @@ public class MakeMetsMods {
     private void saveMM(MetsMods mmNew, String strFolderForMM) throws UGHException {
 
 //        lstMM.add(mmNew);
+        if (boVerbose) {
+            System.out.println("Saving MM " + strFolderForMM);
+        }
+        
         String strFolder = strFolderForMM;
 
         if (!strFolder.endsWith("/")) {
