@@ -211,6 +211,26 @@ public class SGMLParser {
                     Metadata mdTitle = new Metadata(typeTitle);
 
                     if (docStruct.getAllMetadataByType(typeTitle).size() != 0) {
+                        
+                        //check that it is correctly formed:
+                        String strNew = eltTitle.text();
+
+                        if (strNew.contains("�")) {
+                            continue;
+                        }
+                        
+                        //check that it is not just the original title:
+                        String strTitle = docStruct.getAllMetadataByType(typeTitle).get(0).getValue();
+                        
+                        strTitle = strTitle.replace("¬", "");
+                        int iCheck = Math.min(10,  strTitle.length());
+                        iCheck = Math.min(iCheck,strNew.length());
+                        
+                        if (strTitle.substring(0, iCheck).contentEquals(strNew.substring(0, iCheck))) {
+                            continue;
+                        }
+                        
+                        //if not original title, then make it a subtitle:
                         typeTitle = prefs.getMetadataTypeByName("TitleDocSub1");
                         mdTitle = new Metadata(typeTitle);
                     }
