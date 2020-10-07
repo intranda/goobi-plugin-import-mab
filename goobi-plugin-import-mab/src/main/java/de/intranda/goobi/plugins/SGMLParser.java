@@ -2,6 +2,7 @@ package de.intranda.goobi.plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -83,9 +84,9 @@ public class SGMLParser {
 
     private void parse(File sgml) throws IOException, UGHException {
 
-        String text = ParsingUtils.readFileToString(sgml);
+        //        String text = ParsingUtils.readFileToString(sgml);
 
-        Document doc = getDoc(text);
+        Document doc = getDoc(sgml);
 
         //        //for testing
         //        final File f = new File("/home/joel/git/rechtsgeschichte/test/html.txt");
@@ -211,25 +212,25 @@ public class SGMLParser {
                     Metadata mdTitle = new Metadata(typeTitle);
 
                     if (docStruct.getAllMetadataByType(typeTitle).size() != 0) {
-                        
+
                         //check that it is correctly formed:
                         String strNew = eltTitle.text();
 
                         if (strNew.contains("�")) {
                             continue;
                         }
-                        
+
                         //check that it is not just the original title:
                         String strTitle = docStruct.getAllMetadataByType(typeTitle).get(0).getValue();
-                        
+
                         strTitle = strTitle.replace("¬", "");
-                        int iCheck = Math.min(10,  strTitle.length());
-                        iCheck = Math.min(iCheck,strNew.length());
-                        
+                        int iCheck = Math.min(10, strTitle.length());
+                        iCheck = Math.min(iCheck, strNew.length());
+
                         if (strTitle.substring(0, iCheck).contentEquals(strNew.substring(0, iCheck))) {
                             continue;
                         }
-                        
+
                         //if not original title, then make it a subtitle:
                         typeTitle = prefs.getMetadataTypeByName("TitleDocSub1");
                         mdTitle = new Metadata(typeTitle);
@@ -256,21 +257,41 @@ public class SGMLParser {
 
                 for (Element eltTitle : elt.getElementsByTag("pubplace")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PlaceOfPublication");
-                    Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
-                    docStruct.addMetadata(mdTitle);
+
+                    if (!copyOfMetadata(docStruct, typeTitle, eltTitle.text())) {
+                        Metadata mdTitle = new Metadata(typeTitle);
+                        mdTitle.setValue(eltTitle.text());
+                        docStruct.addMetadata(mdTitle);
+                    }
                 }
 
                 for (Element eltTitle : elt.getElementsByTag("date")) {
                     MetadataType typeTitle = prefs.getMetadataTypeByName("PublicationYear");
-                    Metadata mdTitle = new Metadata(typeTitle);
-                    mdTitle.setValue(eltTitle.text());
+                    if (!copyOfMetadata(docStruct, typeTitle, eltTitle.text())) {
+                        Metadata mdTitle = new Metadata(typeTitle);
+                        mdTitle.setValue(eltTitle.text());
 
-                    docStruct.addMetadata(mdTitle);
+                        docStruct.addMetadata(mdTitle);
+                    }
                 }
             }
 
         }
+    }
+
+    //Check we are not just copying a metadatum
+    private boolean copyOfMetadata(DocStruct docStruct, MetadataType typeTitle, String text) {
+
+        if (docStruct.getAllMetadataByType(typeTitle).size() == 0) {
+            return false;
+        }
+
+        if (docStruct.getAllMetadataByType(typeTitle).get(0).getValue().contains(text)) {
+            return true;
+        }
+
+        //otherwise
+        return false;
     }
 
     private String getDocStructName(Element elt1) {
@@ -388,9 +409,21 @@ public class SGMLParser {
 
     }
 
-    private Document getDoc(final String html) {
-        final Document document = Jsoup.parse(html);
-        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+    private Document getDoc(File sgml) {
+       
+        String charset = "ISO-8859-1";
+
+        Document document = null;
+        try {
+            
+            document = Jsoup.parse(sgml, charset, "");
+            document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+            
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         return document;
     }
 
