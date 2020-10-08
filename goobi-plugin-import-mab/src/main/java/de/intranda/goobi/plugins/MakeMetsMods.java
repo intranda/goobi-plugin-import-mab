@@ -345,15 +345,13 @@ public class MakeMetsMods {
 
             int iLine = 0;
 
+            Boolean boIgnore = false;
+            
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
 
                 //finished one ?
                 if (strCurrentPath != null && str.length() == 0 && !boMVW) {
-
-                    if (boWithSGML) {
-                        sgmlParser.addSGML(mm, currentVolume, strCurrentId);
-                    }
 
                     Boolean boSave = true;
                     if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
@@ -362,6 +360,10 @@ public class MakeMetsMods {
                     }
 
                     if (boSave) {
+                        
+                        if (boWithSGML) {
+                            sgmlParser.addSGML(mm, currentVolume, strCurrentId);
+                        }
                         
                         System.out.println("Save " + strCurrentId + " line " + iLine );
                         saveMM(mm, strCurrentPath);
@@ -411,6 +413,15 @@ public class MakeMetsMods {
                             strCurrentId = content;
                             strCurrentPath = strFolder + strCurrentId + "/";
 
+
+                            if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
+                                System.out.println("Not saving " + strCurrentId);
+                                boIgnore = true;
+                                continue;
+                            } else {
+                                boIgnore = false;
+                            }
+                            
                             if (boVerbose) {
                                 System.out.println("Current path: " + strCurrentPath);
                             }
@@ -465,8 +476,8 @@ public class MakeMetsMods {
 
                         }
 
-                        //only carry if not parent
-                        if (boMVW) {
+                        //only carry if not parent, and not excluded from the id list
+                        if (boMVW || boIgnore) {
                             continue;
                         }
 

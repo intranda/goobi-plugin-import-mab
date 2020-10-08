@@ -47,7 +47,9 @@ public class SGMLParser {
 
     private String strCurrentId;
     public Boolean boVerbose;
-
+    //special case: save everything as Monograph:
+    private Boolean boAllMono = false;
+    
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
 
         this.config = config;
@@ -55,6 +57,8 @@ public class SGMLParser {
         strImagePath = config.getString(strConfigImagePathFile);
         prefs = new Prefs();
         prefs.loadPrefs(config.getString(strConfigRulesetPath));
+        
+        boAllMono = config.getBoolean("allMono", false);
     }
 
     public void addSGML(MetsMods mm, DocStruct currentVolume, String strId) throws IOException, UGHException {
