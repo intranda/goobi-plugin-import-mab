@@ -92,6 +92,9 @@ public class MakeMetsMods {
     //and all top level metadata:
     ArrayList<String> lstTopLevelMetadata;
     private DocStruct currentVolume;
+    
+    //special case: save everything as Monograph:
+    private Boolean boAllMono = false;
 
     //    public static void main(String[] args)
     //            throws ConfigurationException, ParserConfigurationException, SAXException, IOException, UGHException, JDOMException {
@@ -138,6 +141,8 @@ public class MakeMetsMods {
 
         iStopImportAfter = config.getInt("importFirst", 0);
 
+        boAllMono = config.getBoolean("allMono", false); 
+        
         boWithSGML = config.getBoolean("withSGML");
         if (boWithSGML) {
             sgmlParser = new SGMLParser(config);
@@ -392,7 +397,7 @@ public class MakeMetsMods {
                                 System.out.println("Elt is parent: " + content);
                             }
                             
-                            boChild = (mapRev != null) && mapRev.containsKey(content);
+                            boChild = !boAllMono &&  (mapRev != null) && mapRev.containsKey(content);
 
                             if (!boChild) {
                                 currentVolume = null;
