@@ -67,6 +67,9 @@ Die Datei dient zur Konfiguration des Plugins und muss wie folgt aufgebaut sein:
     <!-- List of IDs to import. If empty, import all files -->
     <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>
 
+    <!-- All as monograph -->
+    <allMono>false</allMono>
+    
     <!-- For the import -->
     <basedir>/opt/digiverso/import/diss-mm/</basedir>
     <prefixInDestination>master_</prefixInDestination>
@@ -124,6 +127,10 @@ spezifiziert wie viele Vorgänge angelegt werden sollen. Wenn das 0 ist, werden 
 
 Das Element `"listIDs"`
 spezifiziert der Pfad zu einer Textdatei, in dem eine Liste IDs liegt. Wenn der Datei existiert, und nicht leer ist, werden NUR Vorgänge, die diesen IDs haben erzeugt. Das wird benutzt, um hinterher geänderte oder verbesserte Vorgänge neu zu importieren.
+
+Das Element `"allMono"`
+ist für den Sonderfall auf "true" zu setzen, wenn alle zu importierende Documente als "Monograph" gespeichert werden sollen, _nicht_ als Volume, auch wenn sie Kinder sind.
+
 
 Die restliche Einträge sind für die späteren Import benutzt.
 

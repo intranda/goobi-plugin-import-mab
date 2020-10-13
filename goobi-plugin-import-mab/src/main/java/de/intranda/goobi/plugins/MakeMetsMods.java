@@ -195,7 +195,26 @@ public class MakeMetsMods {
             System.out.println("5");
         }
 
+        //now remove all map entries which do not exist as MVWs:
+        removeEmptyParents();
+        
         saveMMs();
+    }
+
+    //Remove parents from list if they have not been created.
+    private void removeEmptyParents() {
+       
+        ArrayList<String> lstEmptyParents = new ArrayList<String>();
+        
+        for (String strParent : map.keySet()) {
+            if (!mapMVWs.containsKey(strParent)) {
+                lstEmptyParents.add(strParent);
+            }
+        }
+        
+        for (String strMissingParent : lstEmptyParents) {
+            map.remove(strMissingParent);
+        }
     }
 
     public void collectMultiVolumeWorks() throws IOException, UGHException, JDOMException {
@@ -399,8 +418,15 @@ public class MakeMetsMods {
                                 System.out.println("Elt is parent: " + content);
                             }
                             
+                            //Only a child if the parent exists
                             boChild = !boAllMono &&  (mapRev != null) && mapRev.containsKey(content);
-
+                            if (boChild) {
+                                String strParent = mapRev.get(content);
+                                if (!map.containsKey(strParent)) {
+                                    boChild = false;
+                                }
+                            }
+                            
                             if (!boChild) {
                                 currentVolume = null;
                             }

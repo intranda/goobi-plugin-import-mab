@@ -24,6 +24,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
 
@@ -104,7 +105,7 @@ public class SGMLParser {
         }
     }
 
-    public void parse(Element elt) throws UGHException, IOException {
+    public void parse(Element elt) throws IOException, UGHException {
 
         Boolean boWithEbind = false;
 
@@ -128,7 +129,13 @@ public class SGMLParser {
                     if (currentVolume != null) {
                         currentVolume.addChild(dsEintrag);
                     } else {
-                        logical.addChild(dsEintrag);
+                        
+                        try {
+                            logical.addChild(dsEintrag);
+                        } catch (TypeNotAllowedAsChildException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -147,7 +154,12 @@ public class SGMLParser {
                         if (currentVolume != null) {
                             currentVolume.addChild(dsEintrag);
                         } else {
-                            logical.addChild(dsEintrag);
+                            try {
+                                logical.addChild(dsEintrag);
+                            } catch (TypeNotAllowedAsChildException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                         }
                     }
 
