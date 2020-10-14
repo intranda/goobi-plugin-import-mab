@@ -171,19 +171,19 @@ public class MakeMetsMods {
             System.out.println("1");
         }
 
-        readTagsList();
+        readJson();           
 
         if (boVerbose) {
             System.out.println("2");
         }
 
-        readIdsList();
+        readTagsList();
 
         if (boVerbose) {
             System.out.println("3");
         }
 
-        readJson();
+        readIdsList();
 
         if (boVerbose) {
             System.out.println("4");
@@ -793,6 +793,21 @@ public class MakeMetsMods {
         String strFileList = config.getString("listIDs");
 
         if (strFileList == null || strFileList.isEmpty()) {
+            
+            Boolean boOnlyFamilies = config.getBoolean("onlyFamilies", false);
+            
+            if (boOnlyFamilies) {
+                lstIdsToImport = new ArrayList<String>();
+                for (String parent : map.keySet()) {
+                    lstIdsToImport.add(parent);
+                }
+                for (String child : mapRev.keySet()) {
+                    lstIdsToImport.add(child);
+                }
+                
+                Collections.sort(lstIdsToImport);
+            }
+            
             return;
         }
 

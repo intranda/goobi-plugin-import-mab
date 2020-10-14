@@ -27,7 +27,7 @@ public class App {
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testdiss/diss-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/testprivr/privrecht-config.xml";
         //        String strConfig = "/home/joel/git/rechtsgeschichte/data/config.xml";
-//        String strConfig = "/home/joel/git/rechtsgeschichte/testpriv/priv-config-test.xml";
+//        String strConfig = "/home/joel/git/rechtsgeschichte/privrecht/test/zusatz-config.xml";
         String strConfig = "/home/joel/git/rechtsgeschichte/privrecht/test/test-config.xml";
         
         //        String strConfig = "";
