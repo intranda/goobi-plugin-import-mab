@@ -55,6 +55,8 @@ public class MakeMetsMods {
     private String strOutputPath = "outputPath";
     private String strImagePathFile = "imagePathFile";
 
+    private String strIdPrefix = "";
+
     private String strCurrentPath;
     private SGMLParser sgmlParser;
 
@@ -71,7 +73,7 @@ public class MakeMetsMods {
     private Prefs prefs;
     private HashMap<String, String> mapTags;
     private SubnodeConfiguration config;
-//    private ArrayList<MetsMods> lstMM;
+    //    private ArrayList<MetsMods> lstMM;
 
     private int iStopImportAfter = 0;
 
@@ -92,7 +94,7 @@ public class MakeMetsMods {
     //and all top level metadata:
     ArrayList<String> lstTopLevelMetadata;
     private DocStruct currentVolume;
-    
+
     //special case: save everything as Monograph:
     private Boolean boAllMono = false;
 
@@ -132,7 +134,7 @@ public class MakeMetsMods {
 
         this.mapMVWs = new HashMap<String, MetsMods>();
         this.config = config;
-//        lstMM = new ArrayList<MetsMods>();
+        //        lstMM = new ArrayList<MetsMods>();
         this.prefs = new Prefs();
         prefs.loadPrefs(config.getString(strRulesetPath));
         lstIds = new ArrayList<String>();
@@ -141,9 +143,12 @@ public class MakeMetsMods {
 
         iStopImportAfter = config.getInt("importFirst", 0);
 
-        boAllMono = config.getBoolean("allMono", false); 
-        
+        boAllMono = config.getBoolean("allMono", false);
+
         boWithSGML = config.getBoolean("withSGML");
+
+        strIdPrefix = config.getString("idPrefix", "");
+
         if (boWithSGML) {
             sgmlParser = new SGMLParser(config);
             sgmlParser.boVerbose = boVerbose;
@@ -171,7 +176,7 @@ public class MakeMetsMods {
             System.out.println("1");
         }
 
-        readJson();           
+        readJson();
 
         if (boVerbose) {
             System.out.println("2");
@@ -197,21 +202,21 @@ public class MakeMetsMods {
 
         //now remove all map entries which do not exist as MVWs:
         removeEmptyParents();
-        
+
         saveMMs();
     }
 
     //Remove parents from list if they have not been created.
     private void removeEmptyParents() {
-       
+
         ArrayList<String> lstEmptyParents = new ArrayList<String>();
-        
+
         for (String strParent : map.keySet()) {
             if (!mapMVWs.containsKey(strParent)) {
                 lstEmptyParents.add(strParent);
             }
         }
-        
+
         for (String strMissingParent : lstEmptyParents) {
             map.remove(strMissingParent);
         }
@@ -365,7 +370,7 @@ public class MakeMetsMods {
             int iLine = 0;
 
             Boolean boIgnore = false;
-            
+
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
 
@@ -379,12 +384,12 @@ public class MakeMetsMods {
                     }
 
                     if (boSave) {
-                        
+
                         if (boWithSGML) {
                             sgmlParser.addSGML(mm, currentVolume, strCurrentId);
                         }
-                        
-                        System.out.println("Save " + strCurrentId + " line " + iLine );
+
+                        System.out.println("Save " + strCurrentId + " line " + iLine);
                         saveMM(mm, strCurrentPath);
                     }
 
@@ -413,20 +418,20 @@ public class MakeMetsMods {
                         if (tag.contentEquals("0000")) {
 
                             boMVW = (map != null) && map.containsKey(content);
-                            
+
                             if (boVerbose && boMVW) {
                                 System.out.println("Elt is parent: " + content);
                             }
-                            
+
                             //Only a child if the parent exists
-                            boChild = !boAllMono &&  (mapRev != null) && mapRev.containsKey(content);
+                            boChild = !boAllMono && (mapRev != null) && mapRev.containsKey(content);
                             if (boChild) {
                                 String strParent = mapRev.get(content);
                                 if (!map.containsKey(strParent)) {
                                     boChild = false;
                                 }
                             }
-                            
+
                             if (!boChild) {
                                 currentVolume = null;
                             }
@@ -439,7 +444,6 @@ public class MakeMetsMods {
                             strCurrentId = content;
                             strCurrentPath = strFolder + strCurrentId + "/";
 
-
                             if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
                                 System.out.println("Not saving " + strCurrentId);
                                 boIgnore = true;
@@ -447,7 +451,7 @@ public class MakeMetsMods {
                             } else {
                                 boIgnore = false;
                             }
-                            
+
                             if (boVerbose) {
                                 System.out.println("Current path: " + strCurrentPath);
                             }
@@ -471,7 +475,9 @@ public class MakeMetsMods {
                                     mmParent = clone(mmParent);
 
                                     logical = mmParent.getDigitalDocument().getLogicalDocStruct();
-                                    //collection:
+                                    Metadata idOld = logical.getAllMetadataByType(prefs.getMetadataTypeByName("CatalogIDDigital")).get(0);
+                                    idOld.setValue(strIdPrefix + idOld.getValue());
+                                    //                                    logical.changeMetadata(theOldMd, theNewMd)
 
                                     DocStruct volume = mmParent.getDigitalDocument().createDocStruct(prefs.getDocStrctTypeByName("Volume"));
                                     currentVolume = volume;
@@ -525,8 +531,18 @@ public class MakeMetsMods {
                             }
 
                             if (md.getType().getIsPerson()) {
+
                                 logical.addPerson((Person) md);
+
+                            } else if (md.getType().getName().equals("CatalogIDDigital")) {
+
+                                strCurrentId = content;
+                                md.setValue(strIdPrefix + md.getValue());
+                                logical.addMetadata(md);
+                                //                                mm.setGoobiID(strCurrentId);
+
                             } else {
+
                                 //CatalogIDMainSeries from 0004 trump it from 0001
                                 if (tag.equals("0004") && !logical.getAllMetadataByType(md.getType()).isEmpty()) {
                                     logical.removeMetadata(logical.getAllMetadataByType(md.getType()).get(0));
@@ -535,13 +551,6 @@ public class MakeMetsMods {
                                 logical.addMetadata(md);
                             }
 
-                            //set GoobiId:
-                            if (md.getType().getName().equals("CatalogIDDigital")) {
-
-                                strCurrentId = content;
-                                //                                mm.setGoobiID(strCurrentId);
-
-                            }
                         }
 
                     }
@@ -662,7 +671,7 @@ public class MakeMetsMods {
         //copy original file:
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix + strCurrentId + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix + strIdPrefix + strCurrentId + strMediaSuffix + File.separator;
         //        String strNormalPath = strImageFolder + strCurrentId + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
@@ -793,9 +802,9 @@ public class MakeMetsMods {
         String strFileList = config.getString("listIDs");
 
         if (strFileList == null || strFileList.isEmpty()) {
-            
+
             Boolean boOnlyFamilies = config.getBoolean("onlyFamilies", false);
-            
+
             if (boOnlyFamilies) {
                 lstIdsToImport = new ArrayList<String>();
                 for (String parent : map.keySet()) {
@@ -804,10 +813,10 @@ public class MakeMetsMods {
                 for (String child : mapRev.keySet()) {
                     lstIdsToImport.add(child);
                 }
-                
+
                 Collections.sort(lstIdsToImport);
             }
-            
+
             return;
         }
 
@@ -883,11 +892,11 @@ public class MakeMetsMods {
 
     private void saveMM(MetsMods mmNew, String strFolderForMM) throws UGHException {
 
-//        lstMM.add(mmNew);
+        //        lstMM.add(mmNew);
         if (boVerbose) {
             System.out.println("Saving MM " + strFolderForMM);
         }
-        
+
         String strFolder = strFolderForMM;
 
         if (!strFolder.endsWith("/")) {

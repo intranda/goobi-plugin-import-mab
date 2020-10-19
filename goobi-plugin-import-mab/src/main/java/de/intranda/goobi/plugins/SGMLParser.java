@@ -47,6 +47,9 @@ public class SGMLParser {
     private DocStruct currentVolume;
 
     private String strCurrentId;
+    
+    private String strIdPrefix = "";
+    
     public Boolean boVerbose;
     //special case: save everything as Monograph:
     private Boolean boAllMono = false;
@@ -60,6 +63,7 @@ public class SGMLParser {
         prefs.loadPrefs(config.getString(strConfigRulesetPath));
         
         boAllMono = config.getBoolean("allMono", false);
+        strIdPrefix = config.getString("idPrefix", "");
     }
 
     public void addSGML(MetsMods mm, DocStruct currentVolume, String strId) throws IOException, UGHException {
@@ -370,7 +374,7 @@ public class SGMLParser {
         //copy original file:
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix + this.strCurrentId + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix + this.strIdPrefix +  this.strCurrentId + strMediaSuffix + File.separator;
         //        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
