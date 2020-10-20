@@ -92,6 +92,9 @@
        <!-- List of IDs to import. If empty, import all files -->
        <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>
 
+        <!-- Prefix to add to every ID number -->        
+        <idPrefix>mpirg_sisis_</idPrefix>
+
        <!-- For the import -->
 	    <basedir>/opt/digiverso/import/diss-mm/</basedir>
     	<prefixInDestination>master_</prefixInDestination>

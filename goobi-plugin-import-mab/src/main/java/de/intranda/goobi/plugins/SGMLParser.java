@@ -177,12 +177,13 @@ public class SGMLParser {
 
         DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName(getDocStructName(elt2)));
         //metadata:
-        if (dsEintrag.getType().getName().equalsIgnoreCase("Chapter") || dsEintrag.getType().getName().equalsIgnoreCase("OtherDocStrct")) {
+        String strType = dsEintrag.getType().getName();
+        if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
             MetadataType type = prefs.getMetadataTypeByName("TitleDocMain");
             Metadata md = new Metadata(type);
             md.setValue(elt2.text());
             dsEintrag.addMetadata(md);
-        }
+        } 
 
         Elements children = elt2.children();
         for (Element eltPage : children) {
