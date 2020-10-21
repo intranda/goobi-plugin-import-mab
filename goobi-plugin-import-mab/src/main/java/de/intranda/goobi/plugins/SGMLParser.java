@@ -181,9 +181,10 @@ public class SGMLParser {
         if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
             MetadataType type = prefs.getMetadataTypeByName("TitleDocMain");
             Metadata md = new Metadata(type);
-            md.setValue(elt2.text());
+            String strTxt = elt2.ownText();
+            md.setValue(strTxt);
             dsEintrag.addMetadata(md);
-        } 
+        }         
 
         Elements children = elt2.children();
         for (Element eltPage : children) {
