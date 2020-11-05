@@ -282,9 +282,9 @@ public class MakeMetsMods {
                         if (map != null && tag.contentEquals("0000")) {
                             boMVW = map.containsKey(content);
 
-                            if (boVerbose) {
-                                System.out.println("Id: " + content);
-                            }
+                            //                            if (boVerbose) {
+                            //                                System.out.println("Id: " + content);
+                            //                            }
                         }
 
                         //only carry on for parents
@@ -379,7 +379,7 @@ public class MakeMetsMods {
 
                     Boolean boSave = true;
                     if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
-                        System.out.println("Not saving " + strCurrentId);
+                        //                        System.out.println("Not saving " + strCurrentId);
                         boSave = false;
                     }
 
@@ -419,9 +419,9 @@ public class MakeMetsMods {
 
                             boMVW = (map != null) && map.containsKey(content);
 
-                            if (boVerbose && boMVW) {
-                                System.out.println("Elt is parent: " + content);
-                            }
+                            //                            if (boVerbose && boMVW) {
+                            //                                System.out.println("Elt is parent: " + content);
+                            //                            }
 
                             //Only a child if the parent exists
                             boChild = !boAllMono && (mapRev != null) && mapRev.containsKey(content);
@@ -445,7 +445,7 @@ public class MakeMetsMods {
                             strCurrentPath = strFolder + strCurrentId + "/";
 
                             if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
-                                System.out.println("Not saving " + strCurrentId);
+                                //                                System.out.println("Not saving " + strCurrentId);
                                 boIgnore = true;
                                 continue;
                             } else {
@@ -903,7 +903,15 @@ public class MakeMetsMods {
             strFolder = strFolder + "/";
         }
 
-        new File(strFolder).mkdirs();
+        File folder = new File(strFolder);
+        folder.mkdirs();
+
+        //remove any old files:
+        for (File file : folder.listFiles()) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
 
         String strFilename = strFolder + "meta.xml";
         mmNew.write(strFilename);

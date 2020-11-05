@@ -47,13 +47,13 @@ public class SGMLParser {
     private DocStruct currentVolume;
 
     private String strCurrentId;
-    
+
     private String strIdPrefix = "";
-    
+
     public Boolean boVerbose;
     //special case: save everything as Monograph:
     private Boolean boAllMono = false;
-    
+
     public SGMLParser(SubnodeConfiguration config) throws ConfigurationException, PreferencesException {
 
         this.config = config;
@@ -61,7 +61,7 @@ public class SGMLParser {
         strImagePath = config.getString(strConfigImagePathFile);
         prefs = new Prefs();
         prefs.loadPrefs(config.getString(strConfigRulesetPath));
-        
+
         boAllMono = config.getBoolean("allMono", false);
         strIdPrefix = config.getString("idPrefix", "");
     }
@@ -129,13 +129,13 @@ public class SGMLParser {
             for (Element elt2 : elts) {
 
                 if (elt2.tagName().equalsIgnoreCase("div")) {
-                    DocStruct dsEintrag = addDiv(elt2);
+
                     if (currentVolume != null) {
-                        currentVolume.addChild(dsEintrag);
+                        addDiv(elt2, currentVolume);
                     } else {
-                        
+
                         try {
-                            logical.addChild(dsEintrag);
+                            addDiv(elt2, logical);
                         } catch (TypeNotAllowedAsChildException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -154,12 +154,11 @@ public class SGMLParser {
                 for (Element elt2 : elts) {
 
                     if (elt2.tagName().equalsIgnoreCase("div")) {
-                        DocStruct dsEintrag = addDiv(elt2);
                         if (currentVolume != null) {
-                            currentVolume.addChild(dsEintrag);
+                            addDiv(elt2, currentVolume);
                         } else {
                             try {
-                                logical.addChild(dsEintrag);
+                                addDiv(elt2, logical);
                             } catch (TypeNotAllowedAsChildException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -173,24 +172,24 @@ public class SGMLParser {
 
     }
 
-    private DocStruct addDiv(Element elt2) throws UGHException, IOException {
+    private void addDiv(Element elt2, DocStruct dsParent) throws UGHException, IOException {
 
         DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName(getDocStructName(elt2)));
-        //metadata:
-        String strType = dsEintrag.getType().getName();
-        if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
+        //title metadata:
+//        String strType = dsEintrag.getType().getName();
+//        if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
             MetadataType type = prefs.getMetadataTypeByName("TitleDocMain");
-            Metadata md = new Metadata(type);
+            Metadata  md = new Metadata(type);
             String strTxt = elt2.ownText();
             md.setValue(strTxt);
             dsEintrag.addMetadata(md);
-        }         
+//        }
 
         Elements children = elt2.children();
         for (Element eltPage : children) {
 
             if (eltPage.tagName().equalsIgnoreCase("div")) {
-                dsEintrag.addChild(addDiv(eltPage));
+                addDiv(eltPage, dsEintrag);
             }
 
             if (eltPage.tagName().equalsIgnoreCase("page")) {
@@ -206,15 +205,17 @@ public class SGMLParser {
                             logical.addReferenceTo(page, "logical_physical");
                             dsEintrag.addReferenceTo(page, "logical_physical");
                         }
-                    }
 
-                    //                        logical.addReferenceTo(page, "logical_physical");
-                    //                        dsEintrag.addReferenceTo(page, "logical_physical");
+                        //add the page reference to the parent struct:
+                        if (dsParent != currentVolume && dsParent != logical) {
+                            dsParent.addReferenceTo(page, "logical_physical");
+                        }
+                    }
                 }
             }
         }
 
-        return dsEintrag;
+        dsParent.addChild(dsEintrag);
     }
 
     private void addHeader(Element eltHeader) throws MetadataTypeNotAllowedException {
@@ -376,7 +377,7 @@ public class SGMLParser {
         //copy original file:
         String strMasterPrefix = "master_";
         String strMediaSuffix = "_media";
-        String strMasterPath = strImageFolder + strMasterPrefix + this.strIdPrefix +  this.strCurrentId + strMediaSuffix + File.separator;
+        String strMasterPath = strImageFolder + strMasterPrefix + this.strIdPrefix + this.strCurrentId + strMediaSuffix + File.separator;
         //        String strNormalPath = strImageFolder +this.strCurrentId  + strMediaSuffix + File.separator;
 
         new File(strMasterPath).mkdirs();
@@ -432,15 +433,15 @@ public class SGMLParser {
     }
 
     private Document getDoc(File sgml) {
-       
+
         String charset = "ISO-8859-1";
 
         Document document = null;
         try {
-            
+
             document = Jsoup.parse(sgml, charset, "");
             document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-            
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
