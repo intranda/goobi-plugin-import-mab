@@ -200,6 +200,8 @@ public class SGMLParser {
                     if (dsParent != currentVolume && dsParent != logical) {
                         dsParent.addReferenceTo(childPage, "logical_physical");
                     }
+                    
+                    pages.add(childPage);
                 }
             }
 
