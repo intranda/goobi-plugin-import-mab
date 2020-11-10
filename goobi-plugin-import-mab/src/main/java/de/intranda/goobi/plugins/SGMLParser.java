@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -172,24 +174,33 @@ public class SGMLParser {
 
     }
 
-    private void addDiv(Element elt2, DocStruct dsParent) throws UGHException, IOException {
+    private ArrayList<DocStruct> addDiv(Element elt2, DocStruct dsParent) throws UGHException, IOException {
 
         DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName(getDocStructName(elt2)));
         //title metadata:
-//        String strType = dsEintrag.getType().getName();
-//        if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
-            MetadataType type = prefs.getMetadataTypeByName("TitleDocMain");
-            Metadata  md = new Metadata(type);
-            String strTxt = elt2.ownText();
-            md.setValue(strTxt);
-            dsEintrag.addMetadata(md);
-//        }
+        //        String strType = dsEintrag.getType().getName();
+        //        if (strType.equalsIgnoreCase("Chapter") || strType.equalsIgnoreCase("PartOfWork") || strType.equalsIgnoreCase("OtherDocStrct")) {
+        MetadataType type = prefs.getMetadataTypeByName("TitleDocMain");
+        Metadata md = new Metadata(type);
+        String strTxt = elt2.ownText();
+        md.setValue(strTxt);
+        dsEintrag.addMetadata(md);
+        //        }
+
+        ArrayList<DocStruct> pages = new ArrayList<DocStruct>();
 
         Elements children = elt2.children();
         for (Element eltPage : children) {
 
             if (eltPage.tagName().equalsIgnoreCase("div")) {
-                addDiv(eltPage, dsEintrag);
+                ArrayList<DocStruct> childPages = addDiv(eltPage, dsEintrag);
+
+                //add the child pages to the parent struct:
+                for (DocStruct childPage : childPages) {
+                    if (dsParent != currentVolume && dsParent != logical) {
+                        dsParent.addReferenceTo(childPage, "logical_physical");
+                    }
+                }
             }
 
             if (eltPage.tagName().equalsIgnoreCase("page")) {
@@ -210,12 +221,15 @@ public class SGMLParser {
                         if (dsParent != currentVolume && dsParent != logical) {
                             dsParent.addReferenceTo(page, "logical_physical");
                         }
+
+                        pages.add(page);
                     }
                 }
             }
         }
 
         dsParent.addChild(dsEintrag);
+        return pages;
     }
 
     private void addHeader(Element eltHeader) throws MetadataTypeNotAllowedException {
