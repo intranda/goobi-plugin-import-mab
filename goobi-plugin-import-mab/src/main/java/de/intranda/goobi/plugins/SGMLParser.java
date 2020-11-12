@@ -157,7 +157,8 @@ public class SGMLParser {
                 for (Element elt2 : elts) {
 
                     //catch case with images outside div:
-                    if (elt2.tagName().equalsIgnoreCase("page")) {
+                    String strDocType = logical.getType().getName();
+                    if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
                         for (Element eltImg : elt2.getElementsByTag("img")) {
                             DocStruct page = getAndSavePage(eltImg);
                             if (page != null) {
