@@ -153,7 +153,26 @@ public class SGMLParser {
         if (!boWithEbind) {
             for (Element elt1 : elt.getElementsByTag("body")) {
                 Elements elts = elt1.children();
+
                 for (Element elt2 : elts) {
+
+                    //catch case with images outside div:
+                    if (elt2.tagName().equalsIgnoreCase("page")) {
+                        for (Element eltImg : elt2.getElementsByTag("img")) {
+                            DocStruct page = getAndSavePage(eltImg);
+                            if (page != null) {
+                                //create prepage, if necessary
+                                physical.addChild(page);
+
+                                DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
+                                
+                                logical.addReferenceTo(page, "logical_physical");
+                                dsEintrag.addReferenceTo(page, "logical_physical");
+
+                                logical.addChild(dsEintrag);
+                            }
+                        }
+                    }
 
                     if (elt2.tagName().equalsIgnoreCase("div")) {
                         if (currentVolume != null) {
@@ -200,7 +219,7 @@ public class SGMLParser {
                     if (dsParent != currentVolume && dsParent != logical) {
                         dsParent.addReferenceTo(childPage, "logical_physical");
                     }
-                    
+
                     pages.add(childPage);
                 }
             }
