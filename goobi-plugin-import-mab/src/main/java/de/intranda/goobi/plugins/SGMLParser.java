@@ -13,6 +13,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.SystemUtils;
+import org.jfree.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -149,30 +150,44 @@ public class SGMLParser {
 
         }
 
-        //for Privatrecht, looks like this:
+        //for Privatrecht, looks like this: 
         if (!boWithEbind) {
             for (Element elt1 : elt.getElementsByTag("body")) {
                 Elements elts = elt1.children();
 
                 for (Element elt2 : elts) {
+                    try {
+                        //catch case with images outside div:
 
-                    //catch case with images outside div:
-                    String strDocType = logical.getType().getName();
-                    if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
-                        for (Element eltImg : elt2.getElementsByTag("img")) {
-                            DocStruct page = getAndSavePage(eltImg);
-                            if (page != null) {
-                                //create prepage, if necessary
-                                physical.addChild(page);
+                        DocStruct dsTop = currentVolume;
+                        if (dsTop == null) {
+                            dsTop = logical;
+                        }
 
-                                DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
-                                
-                                logical.addReferenceTo(page, "logical_physical");
-                                dsEintrag.addReferenceTo(page, "logical_physical");
+                        String strDocType = dsTop.getType().getName();
+                        if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
 
-                                logical.addChild(dsEintrag);
+                            for (Element eltImg : elt2.getElementsByTag("img")) {
+                                DocStruct page = getAndSavePage(eltImg);
+                                if (page != null) {
+                                    //create prepage, if necessary
+                                    physical.addChild(page);
+
+                                    DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
+                                    dsTop.addReferenceTo(page, "logical_physical");
+                                    if (dsTop != logical) {
+                                        logical.addReferenceTo(page, "logical_physical");
+                                    }
+                                    dsEintrag.addReferenceTo(page, "logical_physical");
+
+                                    dsTop.addChild(dsEintrag);
+                                }
                             }
                         }
+                    } catch (TypeNotAllowedAsChildException e) {
+                        // TODO Auto-generated catch block
+                        Log.error(e.getMessage());
+                        e.printStackTrace();
                     }
 
                     if (elt2.tagName().equalsIgnoreCase("div")) {
