@@ -324,7 +324,10 @@ public class MakeMetsMods {
                             //set GoobiId:
                             if (md.getType().getName().equals("CatalogIDDigital")) {
                                 strCurrentId = content;
-                                //                                mm.setGoobiID(strCurrentId);
+
+                                //add catalogId
+                                Metadata mdCatId = metaMaker.getMetadata("CatalogIdentifier", content);
+                                logical.addMetadata(mdCatId);
                             }
                         }
 
@@ -539,7 +542,10 @@ public class MakeMetsMods {
                                 strCurrentId = content;
                                 md.setValue(strIdPrefix + md.getValue());
                                 logical.addMetadata(md);
-                                //                                mm.setGoobiID(strCurrentId);
+                                
+                                //add catalogId
+                                Metadata mdCatId = metaMaker.getMetadata("CatalogIdentifier", content);
+                                logical.addMetadata(mdCatId);
 
                             } else {
 
