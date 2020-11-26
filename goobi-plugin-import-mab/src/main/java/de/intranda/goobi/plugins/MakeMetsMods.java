@@ -374,11 +374,19 @@ public class MakeMetsMods {
 
             Boolean boIgnore = false;
 
+            DocStruct containedWork = null;
+
             while ((str = reader.readLine()) != null) {
                 str = str.trim();
 
                 //finished one ?
                 if (strCurrentPath != null && str.length() == 0 && !boMVW) {
+
+                    //add the ContainedWork if it exists:
+                    if (containedWork != null) {
+                        logical.addChild(containedWork);
+                        containedWork = null;
+                    }
 
                     Boolean boSave = true;
                     if (lstIdsToImport != null && !lstIdsToImport.isEmpty() && !lstIdsToImport.contains(strCurrentId)) {
@@ -521,7 +529,28 @@ public class MakeMetsMods {
                             continue;
                         }
 
-                        Metadata md = metaMaker.getMetadata(mapTags.get(tag), content);
+                        String strTag = mapTags.get(tag);
+                                              
+                        if (strTag != null && strTag.equals("ContainedWork")) {
+
+                            //create ContainedWork:
+                            DocStructType contWorkType = prefs.getDocStrctTypeByName("ContainedWork");
+                            containedWork = mm.getDigitalDocument().createDocStruct(contWorkType);
+                            containedWork.addMetadata(metaMaker.getMetadata("TitleDocMain", content));
+                            continue;
+                        } else if (containedWork != null && tag.equalsIgnoreCase("0365")) {
+
+                            //add data to ContainedWork
+                            containedWork.addMetadata(metaMaker.getMetadata("Note", content));
+                            continue;
+                        } else if (containedWork != null && tag.equalsIgnoreCase("0369")) {
+
+                            //add data to ContainedWork
+                            containedWork.addMetadata(metaMaker.getMetadata("PublisherName", content));
+                            continue;
+                        }
+                        
+                        Metadata md = metaMaker.getMetadata(strTag, content);
 
                         if (md != null) {
 
@@ -542,12 +571,12 @@ public class MakeMetsMods {
                                 strCurrentId = content;
                                 md.setValue(strIdPrefix + md.getValue());
                                 logical.addMetadata(md);
-                                
+
                                 //add catalogId
                                 Metadata mdCatId = metaMaker.getMetadata("CatalogIdentifier", content);
                                 logical.addMetadata(mdCatId);
 
-                            } else {
+                            }else {
 
                                 //CatalogIDMainSeries from 0004 trump it from 0001
                                 if (tag.equals("0004") && !logical.getAllMetadataByType(md.getType()).isEmpty()) {
@@ -557,7 +586,7 @@ public class MakeMetsMods {
                                 logical.addMetadata(md);
                             }
 
-                        }
+                        } 
 
                     }
 
