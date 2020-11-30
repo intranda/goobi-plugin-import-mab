@@ -131,6 +131,39 @@ public class SGMLParser {
             Elements elts = elt1.children();
             for (Element elt2 : elts) {
 
+                try {
+                    //catch case with images outside div:
+                    DocStruct dsTop = currentVolume;
+                    if (dsTop == null) {
+                        dsTop = logical;
+                    }
+
+                    String strDocType = dsTop.getType().getName();
+                    if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
+
+                        for (Element eltImg : elt2.getElementsByTag("img")) {
+                            DocStruct page = getAndSavePage(eltImg);
+                            if (page != null) {
+                                //create prepage, if necessary
+                                physical.addChild(page);
+
+                                DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
+                                dsTop.addReferenceTo(page, "logical_physical");
+                                if (dsTop != logical) {
+                                    logical.addReferenceTo(page, "logical_physical");
+                                }
+                                dsEintrag.addReferenceTo(page, "logical_physical");
+
+                                dsTop.addChild(dsEintrag);
+                            }
+                        }
+                    }
+                } catch (TypeNotAllowedAsChildException e) {
+                    // TODO Auto-generated catch block
+                    Log.error(e.getMessage());
+                    e.printStackTrace();
+                }
+                
                 if (elt2.tagName().equalsIgnoreCase("div")) {
 
                     if (currentVolume != null) {
