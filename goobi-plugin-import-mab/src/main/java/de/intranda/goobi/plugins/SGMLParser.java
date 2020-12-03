@@ -28,6 +28,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsMods;
 
@@ -129,41 +130,10 @@ public class SGMLParser {
             }
 
             Elements elts = elt1.children();
+            addPrepages(elts);
+            
             for (Element elt2 : elts) {
 
-                try {
-                    //catch case with images outside div:
-                    DocStruct dsTop = currentVolume;
-                    if (dsTop == null) {
-                        dsTop = logical;
-                    }
-
-                    String strDocType = dsTop.getType().getName();
-                    if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
-
-                        for (Element eltImg : elt2.getElementsByTag("img")) {
-                            DocStruct page = getAndSavePage(eltImg);
-                            if (page != null) {
-                                //create prepage, if necessary
-                                physical.addChild(page);
-
-                                DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
-                                dsTop.addReferenceTo(page, "logical_physical");
-                                if (dsTop != logical) {
-                                    logical.addReferenceTo(page, "logical_physical");
-                                }
-                                dsEintrag.addReferenceTo(page, "logical_physical");
-
-                                dsTop.addChild(dsEintrag);
-                            }
-                        }
-                    }
-                } catch (TypeNotAllowedAsChildException e) {
-                    // TODO Auto-generated catch block
-                    Log.error(e.getMessage());
-                    e.printStackTrace();
-                }
-                
                 if (elt2.tagName().equalsIgnoreCase("div")) {
 
                     if (currentVolume != null) {
@@ -188,42 +158,10 @@ public class SGMLParser {
             for (Element elt1 : elt.getElementsByTag("body")) {
                 Elements elts = elt1.children();
 
+                addPrepages(elts);
+                
                 for (Element elt2 : elts) {
-                    try {
-                        //catch case with images outside div:
-
-                        DocStruct dsTop = currentVolume;
-                        if (dsTop == null) {
-                            dsTop = logical;
-                        }
-
-                        String strDocType = dsTop.getType().getName();
-                        if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
-
-                            for (Element eltImg : elt2.getElementsByTag("img")) {
-                                DocStruct page = getAndSavePage(eltImg);
-                                if (page != null) {
-                                    //create prepage, if necessary
-                                    physical.addChild(page);
-
-                                    DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
-                                    dsTop.addReferenceTo(page, "logical_physical");
-                                    if (dsTop != logical) {
-                                        logical.addReferenceTo(page, "logical_physical");
-                                    }
-                                    dsEintrag.addReferenceTo(page, "logical_physical");
-
-                                    dsTop.addChild(dsEintrag);
-                                }
-                            }
-                        }
-                    } catch (TypeNotAllowedAsChildException e) {
-                        // TODO Auto-generated catch block
-                        Log.error(e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                    if (elt2.tagName().equalsIgnoreCase("div")) {
+                      if (elt2.tagName().equalsIgnoreCase("div")) {
                         if (currentVolume != null) {
                             addDiv(elt2, currentVolume);
                         } else {
@@ -238,6 +176,53 @@ public class SGMLParser {
 
                 }
             }
+        }
+
+    }
+
+    private void addPrepages(Elements elts) throws TypeNotAllowedForParentException, UGHException, IOException, TypeNotAllowedAsChildException {
+    
+        DocStruct dsEintrag = dd.createDocStruct(prefs.getDocStrctTypeByName("Prepage"));
+        Boolean boPrepages = false;
+      
+        DocStruct dsTop = currentVolume;
+        if (dsTop == null) {
+            dsTop = logical;
+        }
+
+        for (Element elt2 : elts) {
+
+            try {
+                //catch case with images outside div:
+                String strDocType = dsTop.getType().getName();
+                if (elt2.tagName().equalsIgnoreCase("page") && !strDocType.contentEquals("MultiVolumeWork")) {
+
+                    for (Element eltImg : elt2.getElementsByTag("img")) {
+                        DocStruct page = getAndSavePage(eltImg);
+                        if (page != null) {
+                            //create prepage, if necessary
+                            physical.addChild(page);
+
+                            dsTop.addReferenceTo(page, "logical_physical");
+                            if (dsTop != logical) {
+                                logical.addReferenceTo(page, "logical_physical");
+                            }
+                            dsEintrag.addReferenceTo(page, "logical_physical");
+                            boPrepages = true;
+                        }
+                    }
+                }
+
+            } catch (TypeNotAllowedAsChildException e) {
+                // TODO Auto-generated catch block
+                Log.error(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
+        if (boPrepages) {
+            dsTop.addChild(dsEintrag);
+            System.out.println("Prepages: " + strCurrentId);
         }
 
     }
