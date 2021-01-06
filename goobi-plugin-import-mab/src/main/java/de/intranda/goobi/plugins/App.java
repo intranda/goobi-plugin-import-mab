@@ -49,14 +49,16 @@ public class App {
                 //        String strConfig = "/home/joel/git/rechtsgeschichte/privrecht/test/zusatz-config.xml";
                 String strConfig = "/home/joel/git/rechtsgeschichte/privrecht/test/test-config.xml";
         
+//                String strConfig = "/home/joel/git/rechtsgeschichte/diss/diss-config.xml";
+        
                 //        String strConfig = "";
                 if (args.length > 0) {
                     strConfig = args[0];
                 }
         
-                //        args = new String[2];
-                //        args[0] = strConfig;
-                //        args[1] = "/home/joel/git/rechtsgeschichte/privrecht/priv-all.txt";
+//                        args = new String[2];
+//                        args[0] = strConfig;
+//                        args[1] = "/home/joel/git/rechtsgeschichte/diss/diss-all.txt";
         
                 XMLConfiguration xmlConfig = new XMLConfiguration(strConfig); //ConfigPlugins.getPluginConfig("whatever");
                 xmlConfig.setExpressionEngine(new XPathExpressionEngine());
@@ -90,7 +92,7 @@ public class App {
                     MakeMetsMods maker = new MakeMetsMods(myconfig);
         
                     if (args.length == 0) {
-                        maker.boVerbose = true;
+                        maker.boVerbose = false;
                     }
                     maker.parse();
                 }

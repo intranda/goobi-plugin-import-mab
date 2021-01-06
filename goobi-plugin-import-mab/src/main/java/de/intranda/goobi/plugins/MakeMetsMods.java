@@ -170,40 +170,81 @@ public class MakeMetsMods {
 
     }
 
-    public void parse() throws IOException, UGHException, JDOMException {
+    public void parseNewMabFile(String mabFile) throws IOException, UGHException, JDOMException {
 
-        if (boVerbose) {
-            System.out.println("1");
-        }
+        //        if (boVerbose) {
+        System.out.println("1");
+        //        }
 
         readJson();
 
-        if (boVerbose) {
-            System.out.println("2");
-        }
+        //        if (boVerbose) {
+        System.out.println("2");
+        //        }
 
         readTagsList();
 
-        if (boVerbose) {
-            System.out.println("3");
-        }
+        //        if (boVerbose) {
+        System.out.println("3");
+        //        }
 
         readIdsList();
 
-        if (boVerbose) {
-            System.out.println("4");
-        }
+        //        if (boVerbose) {
+        System.out.println("4");
+        //        }
 
-        collectMultiVolumeWorks();
 
-        if (boVerbose) {
-            System.out.println("5");
-        }
+        collectMultiVolumeWorks(mabFile);
+
+        //        if (boVerbose) {
+        System.out.println("5");
+        //        }
 
         //now remove all map entries which do not exist as MVWs:
         removeEmptyParents();
 
-        saveMMs();
+        saveMMs(mabFile);
+    }
+    
+    
+    //Parse the MAB file specified in the config
+    public void parse() throws IOException, UGHException, JDOMException {
+
+        //        if (boVerbose) {
+        System.out.println("1");
+        //        }
+
+        readJson();
+
+        //        if (boVerbose) {
+        System.out.println("2");
+        //        }
+
+        readTagsList();
+
+        //        if (boVerbose) {
+        System.out.println("3");
+        //        }
+
+        readIdsList();
+
+        //        if (boVerbose) {
+        System.out.println("4");
+        //        }
+
+        String mabFile = config.getString("mabFile");
+
+        collectMultiVolumeWorks(mabFile);
+
+        //        if (boVerbose) {
+        System.out.println("5");
+        //        }
+
+        //now remove all map entries which do not exist as MVWs:
+        removeEmptyParents();
+
+        saveMMs(mabFile);
     }
 
     //Remove parents from list if they have not been created.
@@ -222,9 +263,8 @@ public class MakeMetsMods {
         }
     }
 
-    public void collectMultiVolumeWorks() throws IOException, UGHException, JDOMException {
+    public void collectMultiVolumeWorks(String mabFile) throws IOException, UGHException, JDOMException {
 
-        String mabFile = config.getString("mabFile");
         String text = ParsingUtils.readFileToString(new File(mabFile));
 
         if ((text != null) && (text.length() != 0)) {
@@ -344,10 +384,9 @@ public class MakeMetsMods {
         }
     }
 
-    public void saveMMs() throws IOException, UGHException, JDOMException {
+    public void saveMMs(String mabFile) throws IOException, UGHException, JDOMException {
 
         int iImported = 0;
-        String mabFile = config.getString("mabFile");
         String text = ParsingUtils.readFileToString(new File(mabFile));
 
         String strFolder = config.getString(strOutputPath);
@@ -400,7 +439,9 @@ public class MakeMetsMods {
                             sgmlParser.addSGML(mm, currentVolume, strCurrentId);
                         }
 
-                        System.out.println("Save " + strCurrentId + " line " + iLine);
+                        if (boVerbose) {
+                            System.out.println("Save " + strCurrentId + " line " + iLine);
+                        }
                         saveMM(mm, strCurrentPath);
                     }
 
@@ -530,7 +571,7 @@ public class MakeMetsMods {
                         }
 
                         String strTag = mapTags.get(tag);
-                                              
+
                         if (strTag != null && strTag.equals("ContainedWork")) {
 
                             //create ContainedWork:
@@ -549,7 +590,7 @@ public class MakeMetsMods {
                             containedWork.addMetadata(metaMaker.getMetadata("PublisherName", content));
                             continue;
                         }
-                        
+
                         Metadata md = metaMaker.getMetadata(strTag, content);
 
                         if (md != null) {
@@ -576,7 +617,7 @@ public class MakeMetsMods {
                                 Metadata mdCatId = metaMaker.getMetadata("CatalogIdentifier", content);
                                 logical.addMetadata(mdCatId);
 
-                            }else {
+                            } else {
 
                                 //CatalogIDMainSeries from 0004 trump it from 0001
                                 if (tag.equals("0004") && !logical.getAllMetadataByType(md.getType()).isEmpty()) {
@@ -586,7 +627,7 @@ public class MakeMetsMods {
                                 logical.addMetadata(md);
                             }
 
-                        } 
+                        }
 
                     }
 
@@ -692,7 +733,9 @@ public class MakeMetsMods {
         File file = getImageFile(strDatei);
         if (file == null || !file.exists()) {
 
-            System.out.println(strCurrentId + "  -  " + strDatei);
+            if (boVerbose) {
+                System.out.println(strCurrentId + "  -  " + strDatei);
+            }
             return null;
         }
 
