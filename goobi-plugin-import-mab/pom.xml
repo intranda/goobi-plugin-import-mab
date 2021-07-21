@@ -222,5 +222,9 @@
       <artifactId>commons-compress</artifactId>
       <version>1.2</version>
     </dependency>
-  </dependencies>
+</dependencies>
+ <scm>
+    <url>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</url>
+    <connection>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</connection>
+  </scm>
 </project>
