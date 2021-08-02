@@ -4,6 +4,10 @@
   <groupId>de.intranda.goobi.plugins.import</groupId>
   <artifactId>goobi-plugin-import-mab</artifactId>
   <version>1.0.0</version>
+  <scm>
+    <connection>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</connection>
+    <url>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</url>
+  </scm>
   <build>
     <resources>
       <resource>
@@ -65,6 +69,45 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <shortRevisionLength>10</shortRevisionLength>
+          <doCheck>false</doCheck>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Build-Time>${maven.build.timestamp}</Build-Time>
+            </manifestEntries>
+            <manifestSections>
+              <manifestSection>
+                <name>Versions</name>
+                <manifestEntries>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-SCM-Revision>${buildNumber}</Implementation-SCM-Revision>
+                  <Implementation-SCM-Branch>${scmBranch}</Implementation-SCM-Branch>
+                  <Goobi-Version>${goobi.version}</Goobi-Version>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
         </configuration>
       </plugin>
     </plugins>
@@ -146,7 +189,7 @@
     </repository>
   </distributionManagement>
   <properties>
-    <goobi.version>21.06.6</goobi.version>
+    <goobi.version>21.07</goobi.version>
     <jar.name>plugin_intranda_import_mab</jar.name>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
   </properties>

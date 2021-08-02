@@ -7,7 +7,7 @@
   <properties>
     <jar.name>plugin_intranda_import_mab</jar.name>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
-    <goobi.version>21.06.7</goobi.version>
+    <goobi.version>21.07</goobi.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -222,8 +222,8 @@
       <artifactId>commons-compress</artifactId>
       <version>1.2</version>
     </dependency>
-</dependencies>
- <scm>
+  </dependencies>
+  <scm>
     <url>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</url>
     <connection>scm:git:ssh://git@gitea.intranda.com:goobi-workflow/goobi-plugin-import-mab.git</connection>
   </scm>
