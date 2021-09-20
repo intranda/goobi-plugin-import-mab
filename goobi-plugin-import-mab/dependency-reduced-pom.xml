@@ -189,7 +189,7 @@
     </repository>
   </distributionManagement>
   <properties>
-    <goobi.version>21.08.2</goobi.version>
+    <goobi.version>21.08.3</goobi.version>
     <jar.name>plugin_intranda_import_mab</jar.name>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
   </properties>
