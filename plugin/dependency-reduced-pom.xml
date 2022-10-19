@@ -130,12 +130,6 @@
       <artifactId>easymock</artifactId>
       <version>3.6</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>objenesis</artifactId>
-          <groupId>org.objenesis</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
@@ -190,7 +184,7 @@
   </distributionManagement>
   <properties>
     <jar.name>plugin_intranda_import_mab</jar.name>
-    <goobi.version>22.09.2</goobi.version>
+    <goobi.version>22.09.3</goobi.version>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
   </properties>
 </project>
