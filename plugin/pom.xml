@@ -7,7 +7,7 @@
   <properties>
     <jar.name>plugin_intranda_import_mab</jar.name>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
-    <goobi.version>22.09.3</goobi.version>
+    <goobi.version>23.01</goobi.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -210,11 +210,6 @@
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>1.13.1</version>
-    </dependency>
-    <dependency>
-      <groupId>de.intranda.goobi.plugins.import</groupId>
-      <artifactId>import-intranda</artifactId>
-      <version>1.0.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
     <dependency>
