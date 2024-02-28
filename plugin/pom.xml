@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.intranda.goobi.plugins.import</groupId>
   <artifactId>goobi-plugin-import-mab</artifactId>
-  <version>24.01.2</version>
+  <version>24.02</version>
   <packaging>jar</packaging>
   <properties>
     <jar.name>plugin_intranda_import_mab</jar.name>
     <dest.folder>/opt/digiverso/goobi/plugins/opac/</dest.folder>
-    <goobi.version>24.01.2</goobi.version>
+    <goobi.version>24.02</goobi.version>
   </properties>
   <distributionManagement>
     <repository>
