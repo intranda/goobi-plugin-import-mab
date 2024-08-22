@@ -1,5 +1,5 @@
 ---
-title: Documentation for Importing MAB2 Files
+title: Importing MAB2 Files
 identifier: intranda_import_mab
 description: Import plugin for translating MAB2 and SGML data into METS-MODS
 published: false
@@ -46,7 +46,7 @@ The following table contains a summary of the parameters and their descriptions:
 | `rulesetPath`           | Provides the path to the ruleset for the MetsMods files.                                                                                                           |
 | `imagePathFile`         | Specifies the path to the image files, which are located in a subfolder named after the CatalogID.                                                                 |
 | `outputPath`            | Specifies where the finished MetsMods folders are copied, with subfolders named after the CatalogID.                                                               |
-| `mabFile`               | Specifies the MAB2 file to be read.                                                                                                                                |
+| `mabFile`               | Specifies the MAB2 file to be read.                                                                                                                        |
 | `tags`                  | Specifies the translation file that translates MAB2 codes into MetsMods metadata.                                                                                  |
 | `withSGML`              | If set to `true`, the program searches the `"sgmlPath"` folder for SGML files named after the CatalogID. These files are used to give structure to the MetsMods document. |
 | `defaultPublicationType`| Specifies the type of the document in MetsMods if it has no children or parents. A document with children is imported as a MultiVolumeWork, and the children are imported as Volumes. |
