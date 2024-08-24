@@ -2,7 +2,7 @@
 title: MAB-Dateien einlesen
 identifier: intranda_import_mab
 description: Import Plugin für die Übersetzung von MAB2- und SGML-Daten in METS-MODS
-published: false
+published: true
 ---
 
 ## Einführung
