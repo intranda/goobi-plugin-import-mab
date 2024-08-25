@@ -42,60 +42,60 @@ The configuration of the plugin is done in the goobi-plugin-import-mab.xml file 
         <!-- which projects to use for (can be more than one, otherwise use *) -->		
         <project>Project</project>		
         		
-    <!-- Ruleset for the MM files: -->		
-    <rulesetPath>/opt/digiverso/goobi/rulesets/ruleset-mpi.xml</rulesetPath>		
+        <!-- Ruleset for the MM files: -->		
+        <rulesetPath>/opt/digiverso/goobi/rulesets/ruleset-mpi.xml</rulesetPath>		
 
-    <!-- Path to images: -->		
-    <imagePathFile>/opt/digiverso/import/dissertationen/</imagePathFile>		
-    		
-    <!-- Folder where the files are to be copied -->		
-    <outputPath>/opt/digiverso/import/diss-mm/</outputPath>		
+        <!-- Path to images: -->		
+        <imagePathFile>/opt/digiverso/import/dissertationen/</imagePathFile>		
+                
+        <!-- Folder where the files are to be copied -->		
+        <outputPath>/opt/digiverso/import/diss-mm/</outputPath>		
 
-    <!-- Mab file to read: -->		
-    <mabFile>/opt/digiverso/import/dissertationen/data/diss.txt</mabFile>		
-    		
-    <!-- Ruleset for the MM files: -->		
-    <tags>/opt/digiverso/import/dissertationen/data/tags-full.txt</tags>		
-    		
-    <!-- Use SGML files? -->		
-    <withSGML>false</withSGML>		
+        <!-- Mab file to read: -->		
+        <mabFile>/opt/digiverso/import/dissertationen/data/diss.txt</mabFile>		
+                
+        <!-- Ruleset for the MM files: -->		
+        <tags>/opt/digiverso/import/dissertationen/data/tags-full.txt</tags>		
+                
+        <!-- Use SGML files? -->		
+        <withSGML>false</withSGML>		
 
-    <!-- Path to SGML files, if withSGML: -->		
-    <sgmlPath></sgmlPath>		
+        <!-- Path to SGML files, if withSGML: -->		
+        <sgmlPath></sgmlPath>		
 
-    <!-- default publication type if it cannot be detected. If missing or empty, no record will be created -->		
-    <defaultPublicationType>Monograph</defaultPublicationType>		
+        <!-- default publication type if it cannot be detected. If missing or empty, no record will be created -->		
+        <defaultPublicationType>Monograph</defaultPublicationType>		
 
-    <!-- Collection name -->		
-    <singleDigCollection>Dissertationen</singleDigCollection>   		
+        <!-- Collection name -->		
+        <singleDigCollection>Dissertationen</singleDigCollection>   		
 
-    <!-- Mapping for MultiVolumeWork to child Volumes: -->		
-    <mapMVW>/opt/digiverso/import/dissertationen/data/map.txt</mapMVW>		
-    		
-    <!-- Mapping for child Volumes to parent MultiVolumeWork: -->		
-    <mapChildren>/opt/digiverso/import/dissertationen/data/reverseMap.txt</mapChildren>		
+        <!-- Mapping for MultiVolumeWork to child Volumes: -->		
+        <mapMVW>/opt/digiverso/import/dissertationen/data/map.txt</mapMVW>		
+                
+        <!-- Mapping for child Volumes to parent MultiVolumeWork: -->		
+        <mapChildren>/opt/digiverso/import/dissertationen/data/reverseMap.txt</mapChildren>		
 
-    <!-- For testing: stop the import after this many folders have been created. If 0, then import all.-->		
-    <importFirst>10</importFirst>		
+        <!-- For testing: stop the import after this many folders have been created. If 0, then import all.-->		
+        <importFirst>10</importFirst>		
 
-    <!-- List of IDs to import. If empty, import all files -->		
-    <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>		
+        <!-- List of IDs to import. If empty, import all files -->		
+        <listIDs>/opt/digiverso/import/dissertationen/data/missing-image-ids.txt</listIDs>		
 
-    <!-- All as monograph -->		
-    <allMono>false</allMono>		
-    		
-    <!-- For the import -->		
-    <basedir>/opt/digiverso/import/diss-mm/</basedir>		
-    <prefixInDestination>master_</prefixInDestination>		
-    <suffixInDestination>_media</suffixInDestination>		
+        <!-- All as monograph -->		
+        <allMono>false</allMono>		
+                
+        <!-- For the import -->		
+        <basedir>/opt/digiverso/import/diss-mm/</basedir>		
+        <prefixInDestination>master_</prefixInDestination>		
+        <suffixInDestination>_media</suffixInDestination>		
 
-    <title>		
-        <doctype doctypename="Monograph" processtitle="CatalogIDDigital" />		
-        <doctype doctypename="Volume" processtitle="CatalogIDDigital" />		
-        <doctype doctypename="MultiVolumeWork" processtitle="CatalogIDDigital" />		
-    </title>		
+        <title>		
+            <doctype doctypename="Monograph" processtitle="CatalogIDDigital" />		
+            <doctype doctypename="Volume" processtitle="CatalogIDDigital" />		
+            <doctype doctypename="MultiVolumeWork" processtitle="CatalogIDDigital" />		
+        </title>		
 
-    <moveFiles>true</moveFiles>		
+        <moveFiles>true</moveFiles>		
 
     </config>		
 
