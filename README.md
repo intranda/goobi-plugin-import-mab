@@ -2,7 +2,7 @@
 
 <img src="https://goobi.io/wp-content/uploads/logo_goobi_plugin.png" align="right" style="margin:0 0 20px 20px;" alt="Plugin for Goobi workflow" width="175" height="109">
 
-This Import plugin for Goobi workflow allows to import MAB catalogue records to create Goobi processes. 
+This Import plugin for Goobi workflow allows to import MAB catalogue records to create Goobi processes.
 
 This is a plugin for Goobi workflow, the open source workflow tracking software for digitisation projects. More information about Goobi workflow is available under https://goobi.io. If you want to get in touch with the user community simply go to https://community.goobi.io.
 
@@ -15,8 +15,8 @@ Detail                      | Description
 **Plugin identifier**       | intranda_import_mab
 **Plugin type**             | import
 **Licence**                 | GPL 2.0 or newer
-**Documentation (German)**  | https://docs.goobi.io/workflow-plugins/v/eng/import/goobi-plugin-import-mab
-**Documentation (English)** | https://docs.goobi.io/workflow-plugins/v/ger/import/goobi-plugin-import-mab
+**Documentation (German)**  | https://docs.goobi.io/workflow-plugins/v/ger/import/goobi-plugin-import-mab
+**Documentation (English)** | https://docs.goobi.io/workflow-plugins/v/eng/import/goobi-plugin-import-mab
 
 ## Goobi details
 
