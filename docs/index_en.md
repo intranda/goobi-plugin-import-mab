@@ -3,6 +3,10 @@ title: Importing MAB Files
 identifier: intranda_import_mab
 description: Import plugin for translating MAB2 and SGML data into METS-MODS
 published: true
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Import Plugin
 ---
 
 ## Introduction
