@@ -28,12 +28,12 @@ Die Datei `goobi-plugin-import-mab.xml` ist die Konfigurationsdatei.
 Die Mappings mapMVW und mapChildren werden erzeugt. Dafür wird die jar-Datei gestartet, wobei der Pfad zur Konfigurationsdatei als erster Parameter und als weitere Parameter der/die Pfad(e) zu den MAB-Dateien übergeben werden, die bearbeitet werden sollen. Damit werden die Mapping-Dateien erzeugt und gespeichert. 
 
 * Das Programm wird als JAR geöffnet, wobei der Pfad zur Konfigurationsdatei als einziger Parameter übergeben wird.
-* Aus der Konfigurationsdatei werden die Pfade zur MAB2-Datei usw. ausgelesen, und die MAB2-Datei wird durchgelesen..
+* Aus der Konfigurationsdatei werden die Pfade zur MAB2-Datei usw. ausgelesen, und die MAB2-Datei wird durchgelesen.
 * Für jedes Dataset in der Datei wird ein METS-MODS-Dokument mit den passenden Metadaten erzeugt. Die Übersetzung der einzelnen Felder erfolgt mittels der Tags-Datei.
 * Wenn `withSGML` true ist, dann wird im Ordner `sgmlPath` nach SGML-Dateien gesucht, die die CatalogID als Namen haben. Das METS-MODS-Dokument erhält dann daraus die Struktur.
 * Für jede Seite im Dokument werden die passenden Bilder im Ordner `imagePathFile` gesucht, in den Unterordnern, die die CatalogID als Namen haben. Diese werden dann in den Image-Ordner kopiert, und Referenzen in der structMap erstellt.
 * BEMERKUNG: Aktuell werden die Bilder NICHT mit den korrekten Berechtigungen kopiert. Das bedeutet, dass vor dem Import in  Goobi alle erzeugten Ordner und Dateien dem Benutzer `tomcat8` mittels `sudo chown -R tomcat8 *`  zugewiesen werden müssen!
-* Danach können die Vorgägne mit dem Goobi Plugin für den Folder Import importiert werden.
+* Danach können die Vorgänge mit dem Goobi Plugin für den Folder Import importiert werden.
 
 ## Konfiguration
 Die Konfiguration des Plugins erfolgt in der Datei `goobi-plugin-import-mab.xml` wie hier aufgezeigt:
